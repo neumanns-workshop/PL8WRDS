@@ -7,7 +7,7 @@ class WordData {
 
     async loadData() {
         try {
-            const response = await fetch('../../data/wordlist_v1.jsonl');
+            const response = await fetch('/PL8WRDS/data/wordlist_v1.jsonl');
             if (!response.ok) throw new Error('Network response was not ok');
             
             const reader = response.body.getReader();
