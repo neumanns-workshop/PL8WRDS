@@ -1,11 +1,11 @@
-import wordData from '../data/wordData.js';
-import plateData from '../data/plateData.js';
-import hintData from '../data/hintData.js';
-import scoreFactory from './scoreFactory.js';
-import gameState from './gameState.js';
-import uiManager from '../ui/uiManager.js';
-import eventHandler from '../ui/eventHandler.js';
-import statusManager from '../utils/statusManager.js';
+import wordData from '/PL8WRDS/src/data/wordData.js';
+import plateData from '/PL8WRDS/src/data/plateData.js';
+import hintData from '/PL8WRDS/src/data/hintData.js';
+import scoreFactory from '/PL8WRDS/src/core/scoreFactory.js';
+import gameState from '/PL8WRDS/src/core/gameState.js';
+import uiManager from '/PL8WRDS/src/ui/uiManager.js';
+import eventHandler from '/PL8WRDS/src/ui/eventHandler.js';
+import statusManager from '/PL8WRDS/src/utils/statusManager.js';
 
 class GameController {
     constructor() {

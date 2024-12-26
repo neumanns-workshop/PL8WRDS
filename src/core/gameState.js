@@ -1,4 +1,4 @@
-import plateData from '../data/plateData.js';
+import plateData from '/PL8WRDS/src/data/plateData.js';
 
 class GameState {
     constructor() {

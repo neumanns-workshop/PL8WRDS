@@ -1,5 +1,5 @@
-import gameController from './gameController.js';
-import gameState from './gameState.js';
+import gameController from '/PL8WRDS/src/core/gameController.js';
+import gameState from '/PL8WRDS/src/core/gameState.js';
 
 // Initialize game
 gameController.initialize().then(() => {

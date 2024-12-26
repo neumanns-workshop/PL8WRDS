@@ -1,5 +1,5 @@
-import gameState from '../core/gameState.js';
-import statusManager from '../utils/statusManager.js';
+import gameState from '/PL8WRDS/src/core/gameState.js';
+import statusManager from '/PL8WRDS/src/utils/statusManager.js';
 
 class UIManager {
     constructor() {

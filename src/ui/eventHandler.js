@@ -1,10 +1,10 @@
-import gameState from '../core/gameState.js';
-import uiManager from './uiManager.js';
-import statusManager from '../utils/statusManager.js';
-import wordData from '../data/wordData.js';
-import plateData from '../data/plateData.js';
-import scoreFactory from '../core/scoreFactory.js';
-import hintData from '../data/hintData.js';
+import gameState from '/PL8WRDS/src/core/gameState.js';
+import uiManager from '/PL8WRDS/src/ui/uiManager.js';
+import statusManager from '/PL8WRDS/src/utils/statusManager.js';
+import wordData from '/PL8WRDS/src/data/wordData.js';
+import plateData from '/PL8WRDS/src/data/plateData.js';
+import scoreFactory from '/PL8WRDS/src/core/scoreFactory.js';
+import hintData from '/PL8WRDS/src/data/hintData.js';
 
 class EventHandler {
     constructor() {
