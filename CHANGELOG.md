@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.0-beta.2] - 2024-01-09
+## [0.1.0-beta.3] - 2024-01-05
+
+### Added
+- Mobile support improvements
+  - Added tap interaction for game menu start
+  - Fixed About menu scrolling and content layout
+  - Fixed font loading issues
+
+## [0.1.0-beta.2] - 2024-01-05
 
 ### Changed
 - Improved scoring card UI in About menu for better clarity and consistency
