@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'ThaleahFat';
-    src: url('/PL8WRDS/src/ui/fonts/ThaleahFat.ttf') format('truetype');
+    src: url('./fonts/ThaleahFat.ttf') format('truetype');
 }
 
 body {
@@ -152,6 +152,8 @@ body {
 
 .about-screen .scene-content {
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 .status-bar {
@@ -242,6 +244,12 @@ body {
     color: #333;
     text-shadow: 2px 2px 0 #fff;
     transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.menu-button:active {
+    transform: scale(0.95);
 }
 
 .menu-button:disabled {
@@ -312,6 +320,14 @@ body {
     justify-content: center;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.license-plate:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
 }
 
 #plate-text {
@@ -324,6 +340,13 @@ body {
     width: 100%;
     text-align: center;
     font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    opacity: 1;
+    transition: none;
 }
 
 .license-plate .stat-value {
@@ -1012,25 +1035,6 @@ body {
 }
 
 
-/* Plate Text */
-#plate-text {
-    font-size: clamp(48px, 8vw, 72px);
-    color: #111;
-    text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
-    letter-spacing: clamp(8px, 1.5vw, 12px);
-    font-family: 'ThaleahFat', sans-serif;
-    pointer-events: none;
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    opacity: 1;
-    transition: none;
-}
 
 #plate-text.start-plate {
     animation: fadeInOut 1.5s ease-in-out infinite;
@@ -1198,11 +1202,16 @@ body {
 .carousel-content {
     position: relative;
     width: 100%;
-    overflow: hidden;
-    height: min(70vh, 500px);
-    padding: 0;
     max-width: 500px;
     margin: 0 auto;
+    height: min(70vh, 500px);
+    overflow: hidden;
+}
+
+@media screen and (max-width: 480px) {
+    .carousel-content {
+        height: min(80vh, 600px);
+    }
 }
 
 .carousel-arrow {
@@ -1244,24 +1253,21 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     text-align: center;
     padding: min(3vh, 20px) min(2vh, 16px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
 }
 
 .carousel-slide#gameplay,
 .carousel-slide#credits,
-.carousel-slide#scoring {
-    justify-content: center;
-    padding: 0;
-}
-
-.carousel-slide#example {
-    padding-top: min(8vh, 64px);
-}
-
+.carousel-slide#scoring,
+.carousel-slide#example,
 .carousel-slide#controls {
-    padding-top: min(10vh, 80px);
+    justify-content: center;
+    padding: min(3vh, 20px) min(2vh, 16px);
 }
 
 .carousel-slide.active {
@@ -1723,7 +1729,7 @@ body {
 /* About Screen Content */
 /* Carousel Slide Content */
 .text-group {
-    margin: auto;
+    margin: 0;
     padding: min(2vh, 16px);
     width: 100%;
     max-width: 500px;
@@ -1732,18 +1738,15 @@ body {
     gap: min(2vh, 16px);
     align-items: center;
     text-align: center;
-    height: 100%;
-    justify-content: center;
 }
 
 .example-group {
-    padding-top: min(4vh, 32px);
-    padding-bottom: min(4vh, 32px);
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     max-width: 600px;
+    margin: min(2vh, 16px) 0;
 }
 
 .slide-text,
@@ -1764,7 +1767,7 @@ body {
 .example-plate-container {
     text-align: center;
     font-size: min(3.5vh, 28px);
-    margin-bottom: min(4vh, 32px);
+    margin-bottom: min(2vh, 16px);
     color: #333;
     font-weight: bold;
 }
