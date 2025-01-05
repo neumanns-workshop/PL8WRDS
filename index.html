@@ -15,7 +15,7 @@
                 <button class="menu-button" data-screen="game-screen">Play</button>
                 <button class="menu-button" data-screen="about-screen">About</button>
                 <button class="menu-button" data-screen="stats-screen">Stats</button>
-                <div class="version-display">v0.1.0-beta.1</div>
+                <a href="https://github.com/neumanns-workshop/PL8WRDS/blob/main/CHANGELOG.md" target="_blank" class="version-display">v0.1.0-beta.2</a>
             </div>
             <div class="status-bar">
                 <div class="status-message"></div>
@@ -85,18 +85,30 @@
                         </div>
 
                         <div class="carousel-slide" id="scoring">
-                            <div class="text-group">
-                                <div class="score-row">
-                                    <span class="score-value">10</span>
-                                    <span class="score-desc">points per word</span>
+                            <div class="controls-group">
+                                <div class="control-row">
+                                    <div class="key-container">
+                                        <div class="key">+10</div>
+                                    </div>
+                                    <span class="control-desc">Base Points<br>(per word)</span>
                                 </div>
-                                <div class="score-row">
-                                    <span class="score-value">+2</span>
-                                    <span class="score-desc">bonus points per combo</span>
+                                <div class="control-row">
+                                    <div class="key-container">
+                                        <div class="key">+Bonus</div>
+                                    </div>
+                                    <span class="control-desc">Combo Length<br>(current)</span>
                                 </div>
-                                <div class="score-row">
-                                    <span class="score-value">90</span>
-                                    <span class="score-desc">second time limit</span>
+                                <div class="control-row">
+                                    <div class="key-container">
+                                        <div class="key">×Mult</div>
+                                    </div>
+                                    <span class="control-desc">Word Rarity</span>
+                                </div>
+                                <div class="control-row">
+                                    <div class="key-container">
+                                        <div class="key">↺</div>
+                                    </div>
+                                    <span class="control-desc">Plate change<br>banks score</span>
                                 </div>
                             </div>
                         </div>

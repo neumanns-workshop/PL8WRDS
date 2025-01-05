@@ -115,6 +115,14 @@ body {
     color: #666;
     margin-top: 20px;
     text-align: center;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    cursor: pointer;
+}
+
+.version-display:hover {
+    color: #333;
+    text-decoration: underline;
 }
 
 .scene-content {

@@ -13,7 +13,7 @@ Under the following terms:
 - NonCommercial: You may not use the material for commercial purposes
 
 ## Version
-Current version: 0.1.0-beta.1
+Current version: 0.1.0-beta.2
 
 This is a beta release. While the core gameplay is complete, you may encounter bugs or incomplete features. Please report any issues through GitHub.
 
