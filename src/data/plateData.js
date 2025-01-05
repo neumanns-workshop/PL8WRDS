@@ -19,7 +19,7 @@ class PlateData {
 
     async loadData() {
         try {
-            const response = await fetch('../../data/letter_combinations_with_possibilities_and_difficulties.jsonl');
+            const response = await fetch('data/letter_combinations_with_possibilities_and_difficulties.jsonl');
             if (!response.ok) throw new Error('Network response was not ok');
             
             const reader = response.body.getReader();
