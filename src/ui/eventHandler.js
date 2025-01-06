@@ -58,16 +58,22 @@ class EventHandler {
         document.querySelectorAll('.menu-button').forEach(button => {
             const handleNav = () => {
                 const targetScreen = button.getAttribute('data-screen');
-                if (this.timer) {
-                    clearInterval(this.timer);
-                    this.timer = null;
+                if (!targetScreen) return;
+
+                // Clear timers and game state when leaving game screen
+                if (gameState.currentScreen === 'game-screen') {
+                    this.clearTimers();
+                    this.clearGameState();
+                    gameState.gameActive = false;
                 }
-                if (this.hintTimer) {
-                    clearInterval(this.hintTimer);
-                    this.hintTimer = null;
+
+                // If trying to go to game screen from anywhere but main menu,
+                // go to main menu first
+                if (targetScreen === 'game-screen' && gameState.currentScreen !== 'main-menu') {
+                    uiManager.showScreen('main-menu');
+                } else {
+                    uiManager.showScreen(targetScreen);
                 }
-                gameState.gameActive = false;
-                uiManager.showScreen(targetScreen);
             };
 
             button.addEventListener('click', handleNav);
@@ -80,18 +86,11 @@ class EventHandler {
         // Title click handler with touch support
         const title = document.querySelector('.title');
         const handleTitleNav = () => {
-            if (this.timer) {
-                clearInterval(this.timer);
-                this.timer = null;
-            }
-            if (this.hintTimer) {
-                clearInterval(this.hintTimer);
-                this.hintTimer = null;
-            }
             if (gameState.currentScreen === 'game-screen') {
+                this.clearTimers();
                 this.clearGameState();
+                gameState.gameActive = false;
             }
-            gameState.gameActive = false;
             uiManager.showScreen('main-menu');
         };
 
@@ -116,7 +115,8 @@ class EventHandler {
         const handleReset = () => {
             if (confirm('Are you sure you want to reset all stats? This cannot be undone.')) {
                 gameState.resetLifetimeStats();
-                uiManager.updateStatsDisplay(gameState.lifetimeStats);
+                const statsScreen = uiManager.screenManager.getScreen('stats-screen');
+                statsScreen?.updateStatsDisplay(gameState.lifetimeStats);
                 const gameStatus = document.querySelector('.stats-screen .status-message');
                 statusManager.showMessage(gameStatus, 'Stats reset successfully!');
             }
@@ -127,9 +127,6 @@ class EventHandler {
             event.preventDefault();
             handleReset();
         });
-
-        // About screen carousel
-        this.setupAboutCarousel();
     }
 
     handleKeydown(event) {
@@ -510,18 +507,23 @@ class EventHandler {
         this.clearGameState();
     }
 
-    clearGameState() {
-        // Clear timers
-        if (this.timer) clearInterval(this.timer);
-        if (this.hintTimer) clearInterval(this.hintTimer);
-        this.timer = null;
-        this.hintTimer = null;
-        
-        // Clear any existing messages
-        const gameStatus = document.querySelector('.game-screen .status-message');
-        if (gameStatus) {
-            statusManager.clearMessages(gameStatus);
+    clearTimers() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
         }
+        if (this.hintTimer) {
+            clearInterval(this.hintTimer);
+            this.hintTimer = null;
+        }
+        if (this.loadingInterval) {
+            clearInterval(this.loadingInterval);
+            this.loadingInterval = null;
+        }
+    }
+
+    clearGameState() {
+        this.clearTimers();
         
         // Store current values
         const wasDataReady = gameState.gameDataReady;
@@ -546,86 +548,6 @@ class EventHandler {
         
         // Reset score displays
         uiManager.updateScoreDisplays(0, 0, 0, 0, 1.0);
-    }
-
-    setupAboutCarousel() {
-        const slides = ['gameplay', 'example', 'controls', 'scoring', 'credits'];
-        let currentSlideIndex = 0;
-
-        document.querySelectorAll('.label').forEach((label, index) => {
-            const handleLabelNav = () => {
-                currentSlideIndex = index;
-                this.updateCarousel(currentSlideIndex, slides);
-                // Ensure the slide content is scrolled to top when changing slides
-                const activeSlide = document.querySelector('.carousel-slide.active');
-                if (activeSlide) {
-                    activeSlide.scrollTop = 0;
-                }
-            };
-
-            label.addEventListener('click', handleLabelNav);
-            label.addEventListener('touchend', (event) => {
-                event.preventDefault();
-                handleLabelNav();
-            });
-        });
-
-        // Handle both click and touch events for carousel navigation
-        const leftArrow = document.querySelector('.about-screen .carousel-arrow.left');
-        const rightArrow = document.querySelector('.about-screen .carousel-arrow.right');
-
-        const handleLeft = () => {
-            currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-            this.updateCarousel(currentSlideIndex, slides);
-        };
-
-        const handleRight = () => {
-            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-            this.updateCarousel(currentSlideIndex, slides);
-        };
-
-        leftArrow?.addEventListener('click', handleLeft);
-        leftArrow?.addEventListener('touchend', (event) => {
-            event.preventDefault();
-            handleLeft();
-        });
-
-        rightArrow?.addEventListener('click', handleRight);
-        rightArrow?.addEventListener('touchend', (event) => {
-            event.preventDefault();
-            handleRight();
-        });
-    }
-
-    updateCarousel(currentSlideIndex, slides) {
-        const allSlides = document.querySelectorAll('.carousel-slide');
-        const allLabels = document.querySelectorAll('.label');
-        
-        // Update slides
-        allSlides.forEach((slide, index) => {
-            slide.classList.remove('active', 'prev', 'next');
-            const position = (index - currentSlideIndex + slides.length) % slides.length;
-            if (position === 0) {
-                slide.classList.add('active');
-            } else if (position === slides.length - 1) {
-                slide.classList.add('prev');
-            } else if (position === 1) {
-                slide.classList.add('next');
-            }
-        });
-        
-        // Update labels
-        allLabels.forEach((label, index) => {
-            label.classList.remove('active', 'prev', 'next');
-            const position = (index - currentSlideIndex + slides.length) % slides.length;
-            if (position === 0) {
-                label.classList.add('active');
-            } else if (position === slides.length - 1) {
-                label.classList.add('prev');
-            } else if (position === 1) {
-                label.classList.add('next');
-            }
-        });
     }
 }
 
