@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="orientation" content="portrait">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>PL8WRDS</title>
     <link rel="stylesheet" href="src/ui/styles.css">
 </head>
@@ -206,7 +209,7 @@
                 <div id="score-popup" class="score-popup"></div>
             </div>
                 <div class="text-entry">
-                    <input type="text" id="word-input" readonly placeholder="Type a word (3-15 letters)...">
+                    <input type="text" id="word-input" placeholder="Type a word (3-15 letters)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send">
                     <div class="combo-words">
                         <button class="carousel-arrow left" type="button">←</button>
                         <div class="words-scroll"></div>
