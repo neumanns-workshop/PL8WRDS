@@ -13,7 +13,7 @@ Under the following terms:
 - NonCommercial: You may not use the material for commercial purposes
 
 ## Version
-Current version: 0.1.0-beta.3
+Current version: 0.1.0-beta.4
 
 This is a beta release. While the core gameplay is complete, you may encounter bugs or incomplete features. Please report any issues through GitHub.
 
@@ -50,7 +50,8 @@ PL8WRDS challenges players to find words that contain three given letters in seq
   - Dynamic scaling for different screen sizes
   - Custom pixel font (ThaleahFat)
   - Smooth animations and transitions
-  - Keyboard and touch controls
+  - Full mobile support with touch controls
+  - Consistent UI across all screens
 
 ## Technical Implementation
 
@@ -92,7 +93,7 @@ PL8WRDS challenges players to find words that contain three given letters in seq
 PL8WRDS/
 ├── index.html        # Game interface
 ├── LICENSE.txt       # CC BY-NC 4.0 License
-├── README.md         # Project documentation
+├── README.md        # Project documentation
 ├── data/            # Data files
 │   ├── letter_combinations_with_possibilities_and_difficulties.jsonl
 │   ├── letter_frequencies.json
@@ -109,10 +110,27 @@ PL8WRDS/
     │   └── wordData.js
     ├── ui/          # User interface
     │   ├── eventHandler.js
-    │   ├── styles.css
     │   ├── uiManager.js
-    │   └── fonts/
-    │       └── ThaleahFat.ttf
+    │   ├── fonts/
+    │   │   └── ThaleahFat.ttf
+    │   ├── screens/ # Screen components
+    │   │   ├── AboutScreen.js
+    │   │   ├── BaseScreen.js
+    │   │   ├── GameScreen.js
+    │   │   ├── MainMenuScreen.js
+    │   │   ├── ScreenManager.js
+    │   │   └── StatsScreen.js
+    │   └── styles/  # Modular CSS
+    │       ├── about.css
+    │       ├── base.css
+    │       ├── carousel.css
+    │       ├── game-over.css
+    │       ├── game-screen.css
+    │       ├── license-plate.css
+    │       ├── main.css
+    │       ├── menu.css
+    │       ├── stats.css
+    │       └── status.css
     └── utils/       # Utilities
         └── statusManager.js
 ```
@@ -136,6 +154,7 @@ PL8WRDS/
 - **Enter**: Submit word
 - **Backspace**: Delete letter
 - **A-Z**: Type letters to form words
+- **Touch**: Full mobile support with touch controls
 
 ## Statistics
 
@@ -157,6 +176,7 @@ The project uses vanilla JavaScript with a modular architecture. Key design patt
 - Observer pattern for UI updates
 - Queue system for status messages
 - Event-driven architecture for game state management
+- Modular CSS with component-specific styles
 
 ### Hint System
 
@@ -211,6 +231,12 @@ The system intelligently cycles through hint types and includes fallback mechani
    - Combo words display
    - Touch and keyboard navigation
 
+4. **Mobile Support**
+   - Responsive design for all screen sizes
+   - Touch-friendly controls
+   - Optimized layouts for mobile devices
+   - Consistent UI across platforms
+
 ### Performance Considerations
 
 - Words indexed by length for efficient lookup
@@ -218,6 +244,7 @@ The system intelligently cycles through hint types and includes fallback mechani
 - Status message queue for smooth UI updates
 - Efficient regex patterns for word validation
 - Optimized score calculation with frequency ranges
+- Modular CSS for better maintainability
 
 ## Future Enhancements
 

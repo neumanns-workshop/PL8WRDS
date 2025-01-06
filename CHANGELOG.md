@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.0-beta.4] - 2024-01-06
+
+### Changed
+- Modularized code architecture
+  - Split screens into individual components
+  - Created BaseScreen class for shared functionality
+  - Implemented ScreenManager for better state handling
+  - Improved screen transitions and lifecycle management
+- Modularized CSS structure for better maintainability
+  - Split styles into component-specific files
+  - Improved organization of UI-related code
+- Fixed UI consistency issues
+  - Unified plate display design across game over and stats screens
+  - Consistent vertical alignment in about screen carousel
+  - Fixed menu button interaction issues
+- Completed mobile UI improvements
+  - Optimized layouts for all screen sizes
+  - Enhanced touch controls
+  - Fixed scrolling and overflow issues
+
 ## [0.1.0-beta.3] - 2024-01-05
 
 ### Added

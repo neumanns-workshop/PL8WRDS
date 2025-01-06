@@ -1,0 +1,172 @@
+/* License Plate */
+.license-plate {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    margin: clamp(10px, 2vh, 20px) 0;
+    box-sizing: border-box;
+    padding: clamp(15px, 3vh, 25px) clamp(20px, 3vw, 30px);
+    background: linear-gradient(145deg, #f4f4f4, #e6e6e6);
+    border: clamp(6px, 1.5vw, 8px) solid #444;
+    border-radius: clamp(12px, 2vw, 16px);
+    box-shadow: 
+        inset 0 2px 8px rgba(255,255,255,0.8),
+        inset 0 -2px 5px rgba(0,0,0,0.05),
+        0 5px 15px rgba(0,0,0,0.1);
+    aspect-ratio: 2/1;
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.license-plate:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+#plate-text {
+    font-size: clamp(48px, 8vw, 72px);
+    color: #111;
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+    letter-spacing: clamp(8px, 1.5vw, 12px);
+    font-family: 'ThaleahFat', sans-serif;
+    pointer-events: none;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    opacity: 1;
+    transition: none;
+}
+
+.license-plate .stat-value {
+    font-family: 'ThaleahFat', sans-serif;
+    font-size: clamp(24px, 5vw, 32px);
+    color: #333;
+    text-shadow: 2px 2px 0 #fff;
+    font-weight: bold;
+    letter-spacing: 2px;
+    position: absolute;
+    padding: 10px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.license-plate .stat-value.top-left,
+.license-plate .stat-value.top-right,
+.license-plate .stat-value.bottom-left,
+.license-plate .stat-value.bottom-middle,
+.license-plate .stat-value.bottom-right {
+    font-size: clamp(36px, 6vw, 48px);
+    min-width: 80px;
+}
+
+.license-plate .stat-value.top-left {
+    top: 5px;
+    left: 5px;
+}
+
+.license-plate .stat-value.top-right {
+    top: 5px;
+    right: 5px;
+}
+
+.license-plate .stat-value.bottom-left {
+    bottom: 5px;
+    left: 5px;
+}
+
+.license-plate .stat-value.bottom-middle {
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.license-plate .stat-value.bottom-right {
+    bottom: 5px;
+    right: min(5px, 1vw);
+}
+
+#plate-text.start-plate {
+    animation: fadeInOut 1.5s ease-in-out infinite;
+    letter-spacing: normal;
+    color: #333;
+    text-shadow: 2px 2px 0 #fff;
+    transition: none;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Score Animation */
+.score-popup {
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    transform: translateY(-100%);
+    font-size: 24px;
+    color: #44ff44;
+    text-shadow: 2px 2px 0 #000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.score-popup.show {
+    animation: popupFade 1s ease-out forwards;
+}
+
+@keyframes popupFade {
+    0% { transform: translateY(0); opacity: 0; }
+    20% { transform: translateY(-10px); opacity: 1; }
+    80% { transform: translateY(-10px); opacity: 1; }
+    100% { transform: translateY(-20px); opacity: 0; }
+}
+
+@media screen and (max-width: 480px) {
+
+    .license-plate .stat-value {
+        min-width: clamp(40px, 12vw, 45px);
+        padding: clamp(4px, 1vh, 6px);
+        font-size: clamp(16px, 3.5vw, 20px);
+    }
+    
+    .license-plate .stat-value.top-left,
+    .license-plate .stat-value.top-right,
+    .license-plate .stat-value.bottom-left,
+    .license-plate .stat-value.bottom-middle,
+    .license-plate .stat-value.bottom-right {
+        min-width: clamp(50px, 14vw, 55px);
+        font-size: clamp(20px, 4.5vw, 28px);
+    }
+
+    .license-plate .stat-value.top-left,
+    .license-plate .stat-value.bottom-left {
+        left: clamp(3px, 1vw, 5px);
+    }
+
+    .license-plate .stat-value.top-right,
+    .license-plate .stat-value.bottom-right {
+        right: clamp(3px, 1vw, 5px);
+    }
+
+    #plate-text {
+        font-size: clamp(32px, 7vw, 48px);
+        letter-spacing: clamp(4px, 1.2vw, 8px);
+    }
+}
