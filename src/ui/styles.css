@@ -303,10 +303,10 @@ body {
 /* License Plate */
 .license-plate {
     position: relative;
-    width: 100%;
+    width: 90%;
     max-width: 560px;
     margin: 20px auto;
-    padding: 25px 40px;
+    padding: min(25px, 4vh) min(30px, 4vw);
     background: linear-gradient(145deg, #f4f4f4, #e6e6e6);
     border: 8px solid #444;
     border-radius: 16px;
@@ -397,7 +397,40 @@ body {
 
 .license-plate .stat-value.bottom-right {
     bottom: 5px;
-    right: 5px;
+    right: min(5px, 1vw);
+}
+
+@media screen and (max-width: 480px) {
+    .license-plate {
+        width: 85%;
+        padding: min(25px, 4vh) min(25px, 3vw);
+        border-width: 6px;
+        min-height: min(280px, 45vh);
+    }
+
+    .license-plate .stat-value {
+        min-width: min(45px, 12vw);
+        padding: min(6px, 1.2vw);
+        font-size: clamp(16px, 3.5vw, 20px);
+    }
+    
+    .license-plate .stat-value.top-left,
+    .license-plate .stat-value.top-right,
+    .license-plate .stat-value.bottom-left,
+    .license-plate .stat-value.bottom-middle,
+    .license-plate .stat-value.bottom-right {
+        min-width: min(55px, 14vw);
+        font-size: clamp(20px, 4.5vw, 28px);
+    }
+
+    .license-plate .stat-value.bottom-right {
+        right: min(3px, 0.5vw);
+    }
+
+    #plate-text {
+        font-size: clamp(36px, 7vw, 48px);
+        letter-spacing: clamp(6px, 1.2vw, 8px);
+    }
 }
 
 /* Score Animation */
@@ -626,17 +659,34 @@ body {
 }
 
 @media screen and (max-width: 480px) {
-    .stat-row {
-        grid-template-columns: 1fr;
-        gap: clamp(8px, 1.5vh, 15px);
+    .license-plate {
+        width: 80%;
+        padding: min(15px, 2vh) min(15px, 2vw);
+        min-height: min(200px, 35vh);
+        border-width: 4px;
+        margin: 10px auto;
+        transform: scale(0.95);
     }
-}
 
-.stats-section {
-    margin-top: clamp(10px, 2vh, 15px);
-    padding-top: clamp(10px, 2vh, 15px);
-    border-top: 2px solid #eee;
-}
+    .license-plate .stat-value {
+        padding: min(4px, 0.8vw);
+        min-width: min(40px, 10vw);
+        font-size: clamp(14px, 3vw, 18px);
+    }
+    
+    .license-plate .stat-value.top-left,
+    .license-plate .stat-value.top-right,
+    .license-plate .stat-value.bottom-left,
+    .license-plate .stat-value.bottom-middle,
+    .license-plate .stat-value.bottom-right {
+        min-width: min(45px, 12vw);
+        font-size: clamp(18px, 4vw, 24px);
+    }
+
+    #plate-text {
+        font-size: clamp(32px, 6vw, 42px);
+        letter-spacing: clamp(4px, 1vw, 6px);
+    }
 
 .stats-section h3 {
     font-size: clamp(24px, 5vw, 32px);
@@ -1021,17 +1071,113 @@ body {
 }
 
 @media screen and (max-width: 480px) {
-    .plates-carousel {
-        margin: 10px 0;
+.game-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0;
+}
+
+.game-screen .scene-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    margin: 10px 0;
+    font-size: clamp(48px, 10vw, 72px);
+}
+
+.license-plate {
+    width: 90%;
+    padding: min(15px, 2vh) min(15px, 2vw);
+    min-height: min(150px, 28vh);
+    border-width: 4px;
+    margin: 10px auto;
+    position: relative;
+}
+
+.text-entry {
+    margin: 10px 0;
+}
+
+    .license-plate .stat-value {
+        padding: min(4px, 0.8vw);
+        min-width: min(50px, 14vw);
+        font-size: clamp(20px, 4.5vw, 28px);
     }
     
-    .plate-display {
-        width: 70px;
+    .license-plate .stat-value.top-left,
+    .license-plate .stat-value.top-right,
+    .license-plate .stat-value.bottom-left,
+    .license-plate .stat-value.bottom-middle,
+    .license-plate .stat-value.bottom-right {
+        min-width: min(55px, 16vw);
+        font-size: clamp(26px, 5.5vw, 34px);
     }
-    
-    .word-display {
-        font-size: 18px;
+
+    .menu-screen > .scene-content {
+        margin-top: -10vh;
     }
+
+    .menu-button {
+        margin: 5px 0;
+    }
+
+    .carousel-content {
+        height: 100%;
+    }
+
+    .carousel-slide {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: min(8vh, 64px);
+    }
+
+    .about-screen .scene-content {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #plate-text {
+        font-size: clamp(24px, 5vw, 32px);
+        letter-spacing: clamp(3px, 0.6vw, 5px);
+    }
+
+    .menu-screen > .scene-content {
+        margin-top: -10vh;
+    }
+
+    .menu-button {
+        margin: 5px 0;
+    }
+
+    .carousel-content {
+        height: 100%;
+    }
+
+    .carousel-slide {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: min(8vh, 64px);
+    }
+
+    .about-screen .scene-content {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
 }
 
 
@@ -1253,12 +1399,55 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
     padding: min(3vh, 20px) min(2vh, 16px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.carousel-slide::-webkit-scrollbar {
+    width: min(8px, 2vw);
+}
+
+.carousel-slide::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.carousel-slide::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.carousel-slide::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+@media screen and (max-width: 480px) {
+    .carousel-slide {
+        padding: min(2vh, 15px) min(2vh, 16px);
+        justify-content: flex-start;
+    }
+
+    .text-group {
+        margin-bottom: min(4vh, 32px);
+    }
+
+    .example-group {
+        margin-bottom: min(4vh, 32px);
+    }
+
+    .controls-group {
+        margin-bottom: min(4vh, 32px);
+    }
+
+    .credits-content {
+        padding: min(10vh, 60px) min(2vh, 16px);
+    }
 }
 
 .carousel-slide#gameplay,
@@ -1961,6 +2150,71 @@ body {
     .game-over-content {
         width: 90%;
         padding: 15px;
+    }
+
+    /* Mobile-specific adjustments */
+    .license-plate {
+        width: 85%;
+        padding: min(20px, 3vh) min(20px, 2.5vw);
+        min-height: min(260px, 42vh);
+        border-width: 6px;
+        margin: 15px auto;
+    }
+
+    .license-plate .stat-value {
+        padding: min(5px, 1vw);
+    }
+
+    .text-entry input {
+        width: 85%;
+        max-width: 600px;
+        font-size: clamp(28px, 5.5vw, 36px);
+    }
+
+    .combo-words {
+        width: 85%;
+        max-width: 600px;
+    }
+
+    .about-screen .scene-content {
+        padding: 10px;
+    }
+
+    .carousel-slide {
+        padding: min(2vh, 15px);
+    }
+
+    /* Improve touch targets */
+    .menu-button,
+    .carousel-arrow,
+    .key {
+        min-height: 44px; /* iOS minimum touch target size */
+    }
+
+    /* Ensure proper spacing */
+    .text-group,
+    .example-group,
+    .controls-group {
+        margin-bottom: min(4vh, 32px);
+    }
+
+    /* Improve scrollbar for touch */
+    ::-webkit-scrollbar {
+        width: min(8px, 2vw);
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
     }
 }
 

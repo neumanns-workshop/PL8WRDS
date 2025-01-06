@@ -17,10 +17,46 @@ class EventHandler {
     setupEventListeners() {
         // Keyboard input handling
         document.addEventListener('keydown', this.handleKeydown.bind(this));
+        
+        // Mobile keyboard input handling
+        const wordInput = document.getElementById('word-input');
+        wordInput?.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                this.submitWord();
+            }
+        });
+        wordInput?.addEventListener('input', (event) => {
+            if (!gameState.gameActive) return;
+            
+            const input = event.target;
+            const value = input.value.toUpperCase();
+            
+            // Only allow letters and respect max length
+            const maxLength = wordData?.getMaxWordLength() || 15;
+            const filtered = value.replace(/[^A-Z]/g, '').slice(0, maxLength);
+            if (filtered !== value) {
+                input.value = filtered;
+            }
+            
+            // Update game state
+            gameState.currentWord = filtered;
+            uiManager.updateWordDisplay(filtered);
+        });
 
-        // Menu navigation
+        // Handle mobile keyboard backspace
+        wordInput?.addEventListener('keydown', (event) => {
+            if (event.key === 'Backspace') {
+                // Let the input event handle the actual text change
+                // We just need to update the game state
+                gameState.currentWord = gameState.currentWord.slice(0, -1);
+                uiManager.updateWordDisplay(gameState.currentWord);
+            }
+        });
+
+        // Menu navigation with touch support
         document.querySelectorAll('.menu-button').forEach(button => {
-            button.addEventListener('click', () => {
+            const handleNav = () => {
                 const targetScreen = button.getAttribute('data-screen');
                 if (this.timer) {
                     clearInterval(this.timer);
@@ -32,11 +68,18 @@ class EventHandler {
                 }
                 gameState.gameActive = false;
                 uiManager.showScreen(targetScreen);
+            };
+
+            button.addEventListener('click', handleNav);
+            button.addEventListener('touchend', (event) => {
+                event.preventDefault();
+                handleNav();
             });
         });
 
-        // Title and license plate click handlers
-        document.querySelector('.title')?.addEventListener('click', () => {
+        // Title click handler with touch support
+        const title = document.querySelector('.title');
+        const handleTitleNav = () => {
             if (this.timer) {
                 clearInterval(this.timer);
                 this.timer = null;
@@ -50,20 +93,39 @@ class EventHandler {
             }
             gameState.gameActive = false;
             uiManager.showScreen('main-menu');
+        };
+
+        title?.addEventListener('click', handleTitleNav);
+        title?.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            handleTitleNav();
         });
 
-        document.querySelector('.license-plate')?.addEventListener('click', () => {
+        // Handle both click and touch events for license plate
+        const licensePlate = document.querySelector('.license-plate');
+        licensePlate?.addEventListener('click', () => {
+            this.handleSpaceKey();
+        });
+        licensePlate?.addEventListener('touchend', (event) => {
+            event.preventDefault(); // Prevent click event from firing
             this.handleSpaceKey();
         });
 
-        // Stats reset handler
-        document.getElementById('reset-stats')?.addEventListener('click', () => {
+        // Stats reset handler with touch support
+        const resetButton = document.getElementById('reset-stats');
+        const handleReset = () => {
             if (confirm('Are you sure you want to reset all stats? This cannot be undone.')) {
                 gameState.resetLifetimeStats();
                 uiManager.updateStatsDisplay(gameState.lifetimeStats);
                 const gameStatus = document.querySelector('.stats-screen .status-message');
                 statusManager.showMessage(gameStatus, 'Stats reset successfully!');
             }
+        };
+
+        resetButton?.addEventListener('click', handleReset);
+        resetButton?.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            handleReset();
         });
 
         // About screen carousel
@@ -228,6 +290,9 @@ class EventHandler {
 
         // Validate word
         if (!this.validateWord(word, gameStatus)) {
+            // Clear input field and game state
+            const input = document.getElementById('word-input');
+            if (input) input.value = '';
             gameState.currentWord = '';
             uiManager.updateWordDisplay(gameState.currentWord);
             return;
@@ -267,6 +332,9 @@ class EventHandler {
         );
         statusManager.showMessage(gameStatus, `Current Score: ${previewScore}`);
         
+        // Clear input field and game state
+        const input = document.getElementById('word-input');
+        if (input) input.value = '';
         gameState.currentWord = '';
         uiManager.updateWordDisplay(gameState.currentWord);
     }
@@ -466,6 +534,10 @@ class EventHandler {
         gameState.gameDataReady = wasDataReady;
         gameState.currentScreen = currentScreen;
         
+        // Clear input field
+        const input = document.getElementById('word-input');
+        if (input) input.value = '';
+        
         uiManager.updateInputState(false);
         
         // Reset plate display
@@ -481,20 +553,47 @@ class EventHandler {
         let currentSlideIndex = 0;
 
         document.querySelectorAll('.label').forEach((label, index) => {
-            label.addEventListener('click', () => {
+            const handleLabelNav = () => {
                 currentSlideIndex = index;
                 this.updateCarousel(currentSlideIndex, slides);
+                // Ensure the slide content is scrolled to top when changing slides
+                const activeSlide = document.querySelector('.carousel-slide.active');
+                if (activeSlide) {
+                    activeSlide.scrollTop = 0;
+                }
+            };
+
+            label.addEventListener('click', handleLabelNav);
+            label.addEventListener('touchend', (event) => {
+                event.preventDefault();
+                handleLabelNav();
             });
         });
 
-        document.querySelector('.about-screen .carousel-arrow.left')?.addEventListener('click', () => {
+        // Handle both click and touch events for carousel navigation
+        const leftArrow = document.querySelector('.about-screen .carousel-arrow.left');
+        const rightArrow = document.querySelector('.about-screen .carousel-arrow.right');
+
+        const handleLeft = () => {
             currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
             this.updateCarousel(currentSlideIndex, slides);
-        });
+        };
 
-        document.querySelector('.about-screen .carousel-arrow.right')?.addEventListener('click', () => {
+        const handleRight = () => {
             currentSlideIndex = (currentSlideIndex + 1) % slides.length;
             this.updateCarousel(currentSlideIndex, slides);
+        };
+
+        leftArrow?.addEventListener('click', handleLeft);
+        leftArrow?.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            handleLeft();
+        });
+
+        rightArrow?.addEventListener('click', handleRight);
+        rightArrow?.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            handleRight();
         });
     }
 
