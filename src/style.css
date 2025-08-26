@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Mobile-optimized base styles */
+  html {
+    /* Prevent zoom on input focus (iOS) */
+    -webkit-text-size-adjust: 100%;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    /* Prevent overscroll bounce (iOS) */
+    overscroll-behavior: none;
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    /* Font smoothing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Touch-friendly input styling */
+  input, textarea, button {
+    /* Prevent iOS zoom on focus */
+    font-size: 16px;
+    /* Remove iOS default styling */
+    -webkit-appearance: none;
+    appearance: none;
+    /* Remove tap highlight */
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Ensure crisp text rendering */
+  * {
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer components {
+  /* License Plate Component */
+  .license-plate {
+    @apply bg-gradient-to-br from-gray-50 to-gray-100 
+           border border-gray-300 rounded-xl 
+           shadow-lg shadow-gray-900/10
+           font-plate text-gray-900
+           flex items-center justify-center
+           min-h-[100px] px-6 py-4
+           transform transition-all duration-300 ease-out
+           relative overflow-hidden;
+  }
+  
+  .license-plate::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-white/40 to-transparent;
+  }
+  
+  .license-plate.interactive {
+    @apply hover:scale-105 hover:shadow-xl hover:shadow-gray-900/20 active:scale-[0.98] cursor-pointer;
+  }
+  
+  .license-plate-letter {
+    @apply text-4xl sm:text-5xl font-black tracking-[0.15em]
+           mx-2 min-w-[3rem] text-center relative z-10
+           text-shadow;
+  }
+  
+  /* Game Button */
+  .game-button {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold
+           px-8 py-4 rounded-xl
+           min-h-touch w-full sm:w-auto
+           shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/40
+           transform hover:scale-105 active:scale-95 transition-all duration-300
+           touch-manipulation tap-highlight-none
+           relative overflow-hidden;
+  }
+  
+  .game-button::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-white/20 to-transparent 
+           opacity-0 hover:opacity-100 transition-opacity duration-300;
+  }
+  
+  .game-button:disabled {
+    @apply bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed 
+           transform-none shadow-none;
+  }
+  
+  /* Word Input */
+  .word-input {
+    @apply w-full px-6 py-4 text-lg font-medium
+           bg-gradient-to-br from-white to-gray-50 dark:from-dark-surface dark:to-gray-800
+           border border-gray-300 dark:border-dark-border
+           rounded-xl shadow-lg shadow-gray-900/10
+           focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20
+           focus:shadow-xl focus:shadow-blue-500/20
+           transition-all duration-300 ease-out
+           min-h-touch;
+  }
+  
+  /* Word Card */
+  .word-card {
+    @apply bg-gradient-to-br from-white via-white to-gray-50/50
+           dark:from-dark-surface dark:via-dark-surface dark:to-gray-800/50
+           border border-gray-200/60 dark:border-dark-border/60
+           rounded-2xl p-6 shadow-xl shadow-gray-900/10
+           backdrop-blur-sm
+           transform transition-all duration-500 ease-out
+           hover:scale-[1.02] hover:shadow-2xl hover:shadow-gray-900/15
+           relative overflow-hidden;
+  }
+  
+  .word-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5
+           opacity-0 hover:opacity-100 transition-opacity duration-500;
+  }
+  
+  .word-card.animate-in {
+    @apply animate-bounce-in;
+  }
+  
+  /* Hint Badge */
+  .hint-badge {
+    @apply inline-flex items-center px-3 py-1
+           bg-game-hint text-white
+           text-sm font-medium rounded-full
+           animate-pulse-glow;
+  }
+  
+  /* Score Display */
+  .score-display {
+    @apply font-display text-3xl font-black tracking-tight
+           bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800
+           bg-clip-text text-transparent
+           relative;
+  }
+  
+  .score-display::after {
+    content: attr(data-score);
+    @apply absolute inset-0 bg-gradient-to-r from-white/20 to-white/10
+           bg-clip-text text-transparent blur-sm -z-10;
+  }
+}
+
+@layer utilities {
+  /* Mobile-specific utilities */
+  .mobile-container {
+    @apply max-w-md mx-auto px-4 safe-area-inset;
+  }
+  
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20;
+  }
+  
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Animation utilities */
+  .animate-correct {
+    @apply animate-bounce-in bg-game-correct;
+  }
+  
+  .animate-incorrect {
+    @apply animate-shake bg-game-incorrect;
+  }
+} 

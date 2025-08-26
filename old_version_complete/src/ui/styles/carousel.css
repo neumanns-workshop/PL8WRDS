@@ -1,0 +1,217 @@
+/* About Carousel */
+.about-carousel {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto;
+    height: min(50vh, 350px);
+    overflow: hidden;
+}
+
+.carousel-content {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    height: 100%;
+    overflow: hidden;
+}
+
+.carousel-arrow {
+    background: none;
+    border: none;
+    font-size: min(4vh, 32px);
+    color: #333;
+    cursor: pointer;
+    padding: min(2vh, 16px);
+    transition: opacity 0.3s ease;
+    text-shadow: 2px 2px 0 #fff;
+    z-index: 2;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    letter-spacing: min(0.3vh, 2px);
+}
+
+.carousel-arrow:hover:not(:disabled) {
+    opacity: 1;
+}
+
+.carousel-arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.carousel-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+    transition: all 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: min(3vh, 20px) min(2vh, 16px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.carousel-slide::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    z-index: 1;
+}
+
+.carousel-slide.prev {
+    transform: translateX(-100%);
+    z-index: 0;
+}
+
+.carousel-slide.next {
+    transform: translateX(100%);
+    z-index: 0;
+}
+
+.carousel-labels {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: min(2vh, 16px);
+    position: relative;
+    height: min(6vh, 48px);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.label {
+    position: absolute;
+    font-size: min(3vh, 24px);
+    color: #666;
+    cursor: pointer;
+    text-shadow: 2px 2px 0 #fff;
+    padding: min(1vh, 8px);
+    letter-spacing: min(0.3vh, 2px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateX(150%) scale(0.7);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.label.prev {
+    transform: translateX(-150%) scale(0.7);
+    opacity: 0.3;
+    pointer-events: auto;
+    filter: blur(1px);
+}
+
+.label.next {
+    transform: translateX(150%) scale(0.7);
+    opacity: 0.3;
+    pointer-events: auto;
+    filter: blur(1px);
+}
+
+.label.active {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    color: #333;
+    font-weight: bold;
+    pointer-events: auto;
+    filter: blur(0);
+    z-index: 1;
+}
+
+.label:hover {
+    opacity: 0.8;
+}
+
+.label.active:hover {
+    opacity: 1;
+}
+
+/* Plates Carousel */
+.plates-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: clamp(2px, 1vw, 4px);
+    margin: clamp(1px, 0.5vh, 2px) 0;
+    padding: 0 2px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.plates-scroll {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(160px, 20vw, 180px);
+    gap: -20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 2px 0;
+    mask-image: linear-gradient(90deg, 
+        transparent 0%,
+        black 5%,
+        black 95%,
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(90deg, 
+        transparent 0%,
+        black 5%,
+        black 95%,
+        transparent 100%
+    );
+}
+
+.plates-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.plates-scroll::after {
+    content: '';
+    width: 1px;
+    height: 1px;
+    padding-right: 10px;
+}
+
+@media screen and (max-width: 480px) {
+    .about-carousel {
+        height: min(60vh, 400px);
+    }
+
+    .carousel-slide {
+        padding: min(2vh, 15px) min(2vh, 16px);
+    }
+
+    .carousel-arrow {
+        height: 100%;
+    }
+}

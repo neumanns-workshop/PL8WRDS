@@ -1,254 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="screen-orientation" content="portrait">
-    <meta name="orientation" content="portrait">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>PL8WRDS</title>
-    <link rel="stylesheet" href="src/ui/styles/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#1f2937">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PL8WRDS">
+  
+  <!-- Preconnect to improve performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Optimized font loading -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- App Icons -->
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  
+  <title>PL8WRDS - Word Puzzle Game</title>
+  <meta name="description" content="Find words in license plates with rich linguistic data. A mobile-first word puzzle game.">
+  
+  <!-- Prevent flash of unstyled content -->
+  <style>
+    #app {
+      background: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #334155;
+      border-top: 3px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Hide scrollbars but keep functionality */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    
+    html {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
 </head>
-<body>
-    <div class="game-container">
-        <h1 class="title">PL8WRDS</h1>
-
-        <div class="menu-screen active" id="main-menu">
-            <div class="scene-content">
-                <button class="menu-button" data-screen="game-screen">Play</button>
-                <button class="menu-button" data-screen="about-screen">About</button>
-                <button class="menu-button" data-screen="stats-screen">Stats</button>
-                <a href="https://github.com/neumanns-workshop/PL8WRDS/blob/main/CHANGELOG.md" target="_blank" class="version-display">v0.1.0-beta.4</a>
-            </div>
-            <div class="status-bar">
-                <div class="status-message"></div>
-            </div>
-        </div>
-
-        <div class="screen about-screen" id="about-screen">
-            <div class="scene-content">
-                <div class="about-carousel">
-                    <button class="carousel-arrow left">←</button>
-                    <div class="carousel-content">
-                        <div class="carousel-slide" id="gameplay">
-                            <div class="text-group">
-                                <p class="slide-text">Find words that use the given letters in order.</p>
-                            </div>
-                        </div>
-
-                        <div class="carousel-slide" id="example">
-                            <div class="example-group">
-                                <div class="example-plate-container">QRI</div>
-                                <div class="example-row valid">
-                                    <span class="check">✓</span>
-                                    <span class="word"><span class="highlight">Q</span>UA<span class="highlight">R</span>ANT<span class="highlight">I</span>NE</span>
-                                </div>
-                                <div class="example-row valid">
-                                    <span class="check">✓</span>
-                                    <span class="word">A<span class="highlight">Q</span>UA<span class="highlight">R</span><span class="highlight">I</span>UM</span>
-                                </div>
-                                <div class="example-row invalid">
-                                    <span class="cross">✗</span>
-                                    <span class="word">IN<span class="highlight">Q</span>UI<span class="highlight">R</span>Y</span>
-                                </div>
-                                <div class="example-row valid">
-                                    <span class="check">✓</span>
-                                    <span class="word">IN<span class="highlight">Q</span>UI<span class="highlight">R</span><span class="highlight">I</span>ES</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="carousel-slide" id="controls">
-                            <div class="controls-group">
-                                <div class="control-row">
-                                    <div class="key-container">
-                                        <div class="key">Space</div>
-                                    </div>
-                                    <span class="control-desc">Start game or<br>Get new letters</span>
-                                </div>
-                                <div class="control-row">
-                                    <div class="key-container">
-                                        <div class="key">Enter</div>
-                                    </div>
-                                    <span class="control-desc">Submit word</span>
-                                </div>
-                                <div class="control-row">
-                                    <div class="key-container">
-                                        <div class="key">⌫</div>
-                                    </div>
-                                    <span class="control-desc">Delete letter</span>
-                                </div>
-                                <div class="control-row">
-                                    <div class="key-container">
-                                        <div class="key">A-Z</div>
-                                    </div>
-                                    <span class="control-desc">Type letters to<br>form words</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="carousel-slide" id="scoring">
-                            <div class="controls-group">
-                                <div class="control-row">
-                                    <div class="key-container">
-                                        <div class="key">+10</div>
-                                    </div>
-                                    <span class="control-desc">Base Points<br>(per word)</span>
-                                </div>
-                                <div class="control-row">
-                                    <div class="key-container">
-                                        <div class="key">+Bonus</div>
-                                    </div>
-                                    <span class="control-desc">Combo Length<br>(current)</span>
-                                </div>
-                                <div class="control-row">
-                                    <div class="key-container">
-                                        <div class="key">×Mult</div>
-                                    </div>
-                                    <span class="control-desc">Word Rarity</span>
-                                </div>
-                                <div class="control-row">
-                                    <div class="key-container">
-                                        <div class="key">↺</div>
-                                    </div>
-                                    <span class="control-desc">Plate change<br>banks score</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="carousel-slide" id="credits">
-                            <div class="credits-content">
-                                <p>Developed by Jared Neumann</p>
-                                <p>In loving memory of his mother, Jeanne Owens</p>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="carousel-arrow right">→</button>
-                </div>
-                <div class="carousel-labels">
-                    <span class="label active" data-slide="0">Gameplay</span>
-                    <span class="label" data-slide="1">Example</span>
-                    <span class="label" data-slide="2">Controls</span>
-                    <span class="label" data-slide="3">Scoring</span>
-                    <span class="label" data-slide="4">Credits</span>
-                </div>
-                <button class="menu-button back-button" data-screen="main-menu">Back</button>
-            </div>
-            <div class="status-bar">
-                <div class="status-message"></div>
-            </div>
-        </div>
-        
-        <div class="screen stats-screen" id="stats-screen">
-            <div class="scene-content">
-                <div class="score-history-container">
-                    <canvas id="score-history"></canvas>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Games Played</div>
-                        <div class="stat-value" id="lifetime-games">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total Score</div>
-                        <div class="stat-value" id="lifetime-score">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Best Score</div>
-                        <div class="stat-value" id="lifetime-best-score">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Unique Plates</div>
-                        <div class="stat-value" id="lifetime-plates">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Best Combo</div>
-                        <div class="stat-value" id="lifetime-combo">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Best Multiplier</div>
-                        <div class="stat-value" id="lifetime-multiplier">×1.0</div>
-                    </div>
-                </div>
-                <div class="stats-section">
-                    <h3>Top Plates</h3>
-                    <div class="plates-carousel">
-                        <button class="carousel-arrow left" type="button">←</button>
-                        <div class="plates-scroll" id="top-plates">
-                            <!-- Dynamically filled with carousel -->
-                        </div>
-                        <button class="carousel-arrow right" type="button">→</button>
-                    </div>
-                    <div class="tooltip-info">Hover over plates to see details</div>
-                </div>
-                <div class="stats-section">
-                    <h3>Hidden Rares</h3>
-                    <div class="hidden-rares">
-                        <!-- Dynamically filled with rare words -->
-                    </div>
-                </div>
-                <div class="button-group">
-                    <button class="menu-button back-button" data-screen="main-menu">Back</button>
-                    <button class="menu-button reset-button" id="reset-stats">Reset Data</button>
-                </div>
-            </div>
-            <div class="status-bar">
-                <div class="status-message"></div>
-            </div>
-        </div>
-
-        <div class="game-screen screen" id="game-screen">
-            <div class="scene-content">
-            <div class="license-plate">
-                <div id="score" class="stat-value top-left">0</div>
-                <div id="time" class="stat-value top-right">1:30</div>
-                <div id="base-points" class="stat-value bottom-left">0</div>
-                <div id="combo" class="stat-value bottom-middle">+0</div>
-                <div id="multiplier" class="stat-value bottom-right">×1.0</div>
-                <div id="plate-text" class="start-plate">Press SPACE to start/refresh</div>
-                <div id="score-popup" class="score-popup"></div>
-            </div>
-                <div class="text-entry">
-                    <input type="text" id="word-input" placeholder="Type a word (3-15 letters)..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send">
-                    <div class="combo-words">
-                        <button class="carousel-arrow left" type="button">←</button>
-                        <div class="words-scroll"></div>
-                        <button class="carousel-arrow right" type="button">→</button>
-                    </div>
-                </div>
-            </div>
-            <div class="status-bar">
-                <div class="status-message"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="game-over" id="game-over">
-        <div class="game-over-content">
-            <h2>Game Over!</h2>
-            <div class="game-over-score">Score: <span id="final-score">0</span></div>
-            <div class="stat-row">
-                <div class="stat">
-                    <div class="stat-label">Best Combo</div>
-                    <div class="stat-value">+0</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Best Base</div>
-                    <div class="stat-value">0</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Best Mult</div>
-                    <div class="stat-value">×1.0</div>
-                </div>
-            </div>
-                <div class="button-container">
-                    <button class="menu-button back-button" data-screen="main-menu">Menu</button>
-                    <button class="menu-button" data-screen="game-screen">Play Again</button>
-                </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="src/core/game.js"></script>
+<body class="h-full bg-dark-bg text-dark-text font-game antialiased">
+  <div id="app" class="h-full">
+    <!-- Loading state -->
+    <div class="loading-spinner"></div>
+  </div>
+  
+  <script type="module" src="/src/main.js"></script>
 </body>
-</html>
+</html> 

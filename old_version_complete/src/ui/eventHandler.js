@@ -1,0 +1,556 @@
+import gameState from '../core/gameState.js';
+import uiManager from './uiManager.js';
+import statusManager from '../utils/statusManager.js';
+import wordData from '../data/wordData.js';
+import plateData from '../data/plateData.js';
+import scoreFactory from '../core/scoreFactory.js';
+import hintData from '../data/hintData.js';
+
+class EventHandler {
+    constructor() {
+        this.timer = null;
+        this.hintTimer = null;
+        this.loadingInterval = null;
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Keyboard input handling
+        document.addEventListener('keydown', this.handleKeydown.bind(this));
+        
+        // Mobile keyboard input handling
+        const wordInput = document.getElementById('word-input');
+        wordInput?.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                this.submitWord();
+            }
+        });
+        wordInput?.addEventListener('input', (event) => {
+            if (!gameState.gameActive) return;
+            
+            const input = event.target;
+            const value = input.value.toUpperCase();
+            
+            // Only allow letters and respect max length
+            const maxLength = wordData?.getMaxWordLength() || 15;
+            const filtered = value.replace(/[^A-Z]/g, '').slice(0, maxLength);
+            if (filtered !== value) {
+                input.value = filtered;
+            }
+            
+            // Update game state
+            gameState.currentWord = filtered;
+            uiManager.updateWordDisplay(filtered);
+        });
+
+        // Handle mobile keyboard backspace
+        wordInput?.addEventListener('keydown', (event) => {
+            if (event.key === 'Backspace') {
+                // Let the input event handle the actual text change
+                // We just need to update the game state
+                gameState.currentWord = gameState.currentWord.slice(0, -1);
+                uiManager.updateWordDisplay(gameState.currentWord);
+            }
+        });
+
+        // Menu navigation with touch support
+        document.querySelectorAll('.menu-button').forEach(button => {
+            const handleNav = () => {
+                const targetScreen = button.getAttribute('data-screen');
+                if (!targetScreen) return;
+
+                // Clear timers and game state when leaving game screen
+                if (gameState.currentScreen === 'game-screen') {
+                    this.clearTimers();
+                    this.clearGameState();
+                    gameState.gameActive = false;
+                }
+
+                // If trying to go to game screen from anywhere but main menu,
+                // go to main menu first
+                if (targetScreen === 'game-screen' && gameState.currentScreen !== 'main-menu') {
+                    uiManager.showScreen('main-menu');
+                } else {
+                    uiManager.showScreen(targetScreen);
+                }
+            };
+
+            button.addEventListener('click', handleNav);
+            button.addEventListener('touchend', (event) => {
+                event.preventDefault();
+                handleNav();
+            });
+        });
+
+        // Title click handler with touch support
+        const title = document.querySelector('.title');
+        const handleTitleNav = () => {
+            if (gameState.currentScreen === 'game-screen') {
+                this.clearTimers();
+                this.clearGameState();
+                gameState.gameActive = false;
+            }
+            uiManager.showScreen('main-menu');
+        };
+
+        title?.addEventListener('click', handleTitleNav);
+        title?.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            handleTitleNav();
+        });
+
+        // Handle both click and touch events for license plate
+        const licensePlate = document.querySelector('.license-plate');
+        licensePlate?.addEventListener('click', () => {
+            this.handleSpaceKey();
+        });
+        licensePlate?.addEventListener('touchend', (event) => {
+            event.preventDefault(); // Prevent click event from firing
+            this.handleSpaceKey();
+        });
+
+        // Stats reset handler with touch support
+        const resetButton = document.getElementById('reset-stats');
+        const handleReset = () => {
+            if (confirm('Are you sure you want to reset all stats? This cannot be undone.')) {
+                gameState.resetLifetimeStats();
+                const statsScreen = uiManager.screenManager.getScreen('stats-screen');
+                statsScreen?.updateStatsDisplay(gameState.lifetimeStats);
+                const gameStatus = document.querySelector('.stats-screen .status-message');
+                statusManager.showMessage(gameStatus, 'Stats reset successfully!');
+            }
+        };
+
+        resetButton?.addEventListener('click', handleReset);
+        resetButton?.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            handleReset();
+        });
+    }
+
+    handleKeydown(event) {
+        // Always prevent default browser behavior for game controls
+        if (['Space', 'Enter', 'Backspace'].includes(event.code) ||
+            (event.key.length === 1 && event.key.match(/[a-zA-Z]/))) {
+            event.preventDefault();
+        }
+
+        // Handle Space key specially since it can start the game
+        if (event.code === 'Space') {
+            this.handleSpaceKey();
+            return;
+        }
+
+        // For all other keys, check if game is active
+        if (!gameState.gameActive) {
+            console.log('Game not active, ignoring input:', event.code);
+            return;
+        }
+
+        switch (event.code) {
+            case 'Enter':
+                this.submitWord();
+                break;
+            case 'Backspace':
+                gameState.currentWord = gameState.currentWord.slice(0, -1);
+                uiManager.updateWordDisplay(gameState.currentWord);
+                break;
+            default:
+                if (event.key.length === 1 && event.key.match(/[a-zA-Z]/)) {
+                    if (wordData && gameState.currentWord.length < wordData.getMaxWordLength()) {
+                        gameState.currentWord += event.key.toUpperCase();
+                        uiManager.updateWordDisplay(gameState.currentWord);
+                    }
+                }
+        }
+    }
+
+    handleSpaceKey() {
+        console.log('handleSpaceKey called', {
+            currentScreen: gameState.currentScreen,
+            gameDataReady: gameState.gameDataReady,
+            gameActive: gameState.gameActive
+        });
+
+        // Only handle Space key on game screen
+        if (gameState.currentScreen !== 'game-screen') {
+            console.log('Not on game screen');
+            return;
+        }
+
+        // Check if game data is ready
+        if (!gameState.gameDataReady) {
+            console.log('Game data not ready yet');
+            const gameStatus = document.querySelector('.game-screen .status-message');
+            if (gameStatus) {
+                statusManager.showMessage(gameStatus, 'Loading game data...');
+            }
+            return;
+        }
+
+        console.log('Starting game...');
+
+        // Handle active game state
+        if (gameState.gameActive) {
+            console.log('Game already active, changing plate');
+            this.handleActivePlateChange();
+        }
+
+        // Generate and display new plate
+        gameState.currentPlate = plateData.generatePlate();
+        uiManager.updatePlateDisplay(gameState.currentPlate);
+
+        // Set game active and start/restart timer
+        gameState.gameActive = true;
+        if (this.timer) clearInterval(this.timer);
+        this.timer = setInterval(this.updateTimer.bind(this), 1000);
+        uiManager.updateInputState(true);
+
+        // Reset plate-specific state
+        this.resetPlateState();
+        
+        // Start hint cycle
+        this.startHintCycle();
+    }
+
+    handleActivePlateChange() {
+        const gameStatus = document.querySelector('.game-screen .status-message');
+        
+        // Bank any remaining combo points
+        if (gameState.comboPoints > 0) {
+            gameState.maxComboPoints += gameState.comboPoints;
+            statusManager.showMessage(gameStatus, `+${gameState.comboPoints} combo points banked! (Total: ${gameState.maxComboPoints})`);
+            gameState.comboPoints = 0;
+        }
+
+        // Calculate final plate score
+        const { score: plateScore, multiplier } = scoreFactory.getPlateScore(
+            gameState.basePoints, 
+            gameState.maxComboPoints, 
+            Array.from(gameState.usedWords), 
+            wordData
+        );
+        gameState.updateMultiplier(multiplier);
+        
+        // Get rarest word for this plate
+        const rarestWord = Array.from(gameState.rareWords)
+            .sort((a, b) => {
+                const freqA = wordData.getWord(a).frequency;
+                const freqB = wordData.getWord(b).frequency;
+                return freqA - freqB;
+            })[0] || '';
+
+        // Update plate score
+        plateData.updatePlateScore(gameState.currentPlate, plateScore, rarestWord);
+        gameState.updateScore(plateScore);
+        
+        // Show score message
+        statusManager.showMessage(gameStatus, `+${plateScore} points from plate!`);
+    }
+
+    resetPlateState() {
+        gameState.basePoints = 0;
+        gameState.combo = 0;
+        gameState.comboPoints = 0;
+        gameState.maxComboPoints = 0;
+        gameState.rareWords.clear();
+        gameState.usedWords.clear();
+        
+        uiManager.clearComboWords();
+        
+        // Reset all score displays
+        document.getElementById('base-points').textContent = '0';
+        document.getElementById('combo').textContent = '';
+        document.getElementById('multiplier').textContent = '';
+        uiManager.updateScoreDisplays(
+            gameState.score,
+            gameState.basePoints,
+            gameState.comboPoints,
+            gameState.maxComboPoints,
+            1.0
+        );
+
+        // Clear any existing hints/messages
+        const gameStatus = document.querySelector('.game-screen .status-message');
+        statusManager.clearMessages(gameStatus);
+    }
+
+    submitWord() {
+        if (!gameState.gameActive) {
+            console.warn('%c Cannot submit word - game not active', 'color: orange');
+            return;
+        }
+
+        const gameStatus = document.querySelector('.game-screen .status-message');
+        const word = gameState.currentWord.toLowerCase();
+
+        // Validate word
+        if (!this.validateWord(word, gameStatus)) {
+            // Clear input field and game state
+            const input = document.getElementById('word-input');
+            if (input) input.value = '';
+            gameState.currentWord = '';
+            uiManager.updateWordDisplay(gameState.currentWord);
+            return;
+        }
+
+        // Word is valid - process it
+        const wordInfo = wordData.getWord(word);
+        gameState.addUsedWord(word, wordInfo);
+        gameState.updateCombo();
+        uiManager.updateComboWords(word, wordInfo.frequency === 0.0);
+
+        // Update displays
+        const { multiplier } = scoreFactory.getPlateScore(
+            gameState.basePoints,
+            gameState.comboPoints,
+            Array.from(gameState.usedWords),
+            wordData
+        );
+        gameState.updateMultiplier(multiplier);
+        
+        uiManager.updateScoreDisplays(
+            gameState.score,
+            gameState.basePoints,
+            gameState.comboPoints,
+            gameState.maxComboPoints,
+            multiplier
+        );
+        
+        uiManager.showScorePopup(10);
+        
+        // Calculate current score preview
+        const { score: previewScore } = scoreFactory.getPlateScore(
+            gameState.basePoints,
+            gameState.comboPoints,
+            Array.from(gameState.usedWords),
+            wordData
+        );
+        statusManager.showMessage(gameStatus, `Current Score: ${previewScore}`);
+        
+        // Clear input field and game state
+        const input = document.getElementById('word-input');
+        if (input) input.value = '';
+        gameState.currentWord = '';
+        uiManager.updateWordDisplay(gameState.currentWord);
+    }
+
+    validateWord(word, gameStatus) {
+        // Check minimum length
+        if (!wordData || word.length < wordData.getMinWordLength()) {
+            statusManager.showMessage(gameStatus, `Word too short (minimum ${wordData?.getMinWordLength()} letters)`);
+            this.handleComboLost();
+            return false;
+        }
+
+        // Check if word exists
+        const wordInfo = wordData.getWord(word);
+        if (!wordInfo) {
+            statusManager.showMessage(gameStatus, 'Word not found');
+            this.handleComboLost();
+            return false;
+        }
+
+        // Check if word contains plate letters
+        if (!plateData.isValidWithPlate(word, gameState.currentPlate)) {
+            statusManager.showMessage(gameStatus, `Must use letters ${gameState.currentPlate} in order`);
+            this.handleComboLost();
+            return false;
+        }
+
+        // Check if word has been used
+        if (gameState.isWordUsed(word)) {
+            statusManager.showMessage(gameStatus, 'Word already used');
+            this.handleComboLost();
+            return false;
+        }
+
+        return true;
+    }
+
+    handleComboLost() {
+        if (gameState.combo > 0) {
+            const gameStatus = document.querySelector('.game-screen .status-message');
+            
+            gameState.resetCombo();
+            uiManager.clearComboWords();
+            
+            // Update displays
+            const { multiplier } = scoreFactory.getPlateScore(
+                gameState.basePoints,
+                gameState.maxComboPoints,
+                Array.from(gameState.usedWords),
+                wordData
+            );
+            gameState.updateMultiplier(multiplier);
+            
+            uiManager.updateScoreDisplays(
+                gameState.score,
+                gameState.basePoints,
+                gameState.comboPoints,
+                gameState.maxComboPoints,
+                multiplier
+            );
+            
+            statusManager.showMessage(gameStatus, 'Combo lost!');
+        }
+    }
+
+    updateTimer() {
+        if (gameState.currentScreen !== 'game-screen') return;
+        
+        if (gameState.timeLeft < 0) {
+            this.endGame();
+            return;
+        }
+        
+        uiManager.updateTimer(gameState.timeLeft);
+        gameState.timeLeft--;
+    }
+
+    startHintCycle() {
+        if (this.hintTimer) {
+            clearInterval(this.hintTimer);
+            this.hintTimer = null;
+        }
+        
+        if (!gameState.gameActive) return;
+        
+        // Show initial hint after a delay
+        setTimeout(() => {
+            if (gameState.gameActive) {
+                const initialHint = this.getNextHint();
+                this.showHint(initialHint);
+            }
+        }, 2000);
+        
+        // Cycle through different hints periodically
+        this.hintTimer = setInterval(() => {
+            if (gameState.gameActive) {
+                const nextHint = this.getNextHint();
+                this.showHint(nextHint);
+            } else {
+                clearInterval(this.hintTimer);
+                this.hintTimer = null;
+            }
+        }, 6000);
+    }
+
+    getNextHint() {
+        if (!gameState.currentPlate || !wordData || !plateData || !hintData) {
+            console.log('Cannot generate hint - missing data');
+            return null;
+        }
+        
+        const possibleWords = hintData.getPossibleWords(
+            gameState.currentPlate,
+            wordData,
+            gameState.usedWords
+        );
+        
+        return hintData.generateHint(
+            gameState.currentPlate,
+            possibleWords,
+            wordData,
+            plateData
+        );
+    }
+
+    showHint(message) {
+        if (!message || !gameState.gameActive) return;
+
+        const activeScreen = document.querySelector('.screen.active, .menu-screen.active');
+        if (!activeScreen) return;
+        
+        const gameStatus = activeScreen.querySelector('.status-message');
+        if (!gameStatus) return;
+
+        statusManager.showMessage(gameStatus, message);
+    }
+
+    endGame() {
+        // Handle any remaining combo points
+        if (gameState.comboPoints > 0) {
+            gameState.maxComboPoints += gameState.comboPoints;
+            gameState.comboPoints = 0;
+        }
+
+        // Calculate final plate score if needed
+        if (gameState.basePoints > 0 || gameState.usedWords.size > 0) {
+            const { score: plateScore, multiplier } = scoreFactory.getPlateScore(
+                gameState.basePoints,
+                gameState.maxComboPoints,
+                Array.from(gameState.usedWords),
+                wordData
+            );
+            gameState.updateMultiplier(multiplier);
+            
+            const rarestWord = Array.from(gameState.rareWords)
+                .sort((a, b) => {
+                    const freqA = wordData.getWord(a).frequency;
+                    const freqB = wordData.getWord(b).frequency;
+                    return freqA - freqB;
+                })[0] || '';
+
+            plateData.updatePlateScore(gameState.currentPlate, plateScore, rarestWord);
+            gameState.updateScore(plateScore);
+        }
+
+        // Update lifetime stats
+        gameState.updateLifetimeStats();
+        
+        // Show game over screen
+        uiManager.showGameOver(gameState, plateData);
+        
+        // Clear game state
+        this.clearGameState();
+    }
+
+    clearTimers() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+        if (this.hintTimer) {
+            clearInterval(this.hintTimer);
+            this.hintTimer = null;
+        }
+        if (this.loadingInterval) {
+            clearInterval(this.loadingInterval);
+            this.loadingInterval = null;
+        }
+    }
+
+    clearGameState() {
+        this.clearTimers();
+        
+        // Store current values
+        const wasDataReady = gameState.gameDataReady;
+        const currentScreen = gameState.currentScreen;
+        
+        // Reset game state
+        gameState.resetState();
+        
+        // Restore values that shouldn't be reset
+        gameState.gameDataReady = wasDataReady;
+        gameState.currentScreen = currentScreen;
+        
+        // Clear input field
+        const input = document.getElementById('word-input');
+        if (input) input.value = '';
+        
+        uiManager.updateInputState(false);
+        
+        // Reset plate display
+        uiManager.updatePlateDisplay();
+        uiManager.clearComboWords();
+        
+        // Reset score displays
+        uiManager.updateScoreDisplays(0, 0, 0, 0, 1.0);
+    }
+}
+
+// Create and export singleton instance
+const eventHandler = new EventHandler();
+export default eventHandler;

@@ -1,0 +1,67 @@
+/* Import modular CSS files */
+@import './base.css';
+@import './menu.css';
+@import './license-plate.css';
+@import './game-screen.css';
+@import './game-over.css';
+@import './status.css';
+@import './carousel.css';
+@import './about.css';
+@import './stats.css';
+
+/* Shared Stats */
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(10px, 2vh, 15px);
+    background: #f8f8f800;
+    border-radius: 8px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    gap: 5px;
+    position: relative;
+}
+
+.stat-label {
+    font-size: clamp(16px, 3vw, 20px);
+    color: #666;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.stat-value {
+    font-size: clamp(24px, 5vw, 32px);
+    color: #333;
+    text-shadow: 2px 2px 0 #fff;
+    font-weight: bold;
+    position: relative;
+}
+
+/* Shared Scrollbar Styles */
+::-webkit-scrollbar {
+    width: min(8px, 2vw);
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Media Queries */
+@media screen and (max-width: 480px) {
+    /* Improve touch targets */
+    .menu-button,
+    .carousel-arrow,
+    .key {
+        min-height: 44px; /* iOS minimum touch target size */
+    }
+}
