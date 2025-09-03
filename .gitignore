@@ -1,4 +1,8 @@
-# Python
+# PL8WRDS .gitignore
+
+# ================================
+# PYTHON
+# ================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -16,13 +20,62 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
-# Virtual environments
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+.coverage_html/
+test-reports/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
 .env
+.env.local
 .venv
 env/
 venv/
@@ -30,36 +83,315 @@ ENV/
 env.bak/
 venv.bak/
 
-# IDE
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# ================================
+# APPLICATION SPECIFIC
+# ================================
+
+# Cache files
+cache/
+*.cache
+
+# Data files (large) - files over 50MB
+data/*.json
+data/*.csv
+data/*.txt
+!data/words_with_freqs.json  # Keep if small (5MB)
+data/corpus_sources/pl8wrds_en_full.json  # 54MB
+client_game_data/pregenerated_solutions.json  # 416MB
+client_game_data/*.gz  # Compressed game data files
+
+# Model files
+models/
+models/*.json  # Large ML model files (625MB+)
+*.joblib
+*.pkl
+*.model
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Configuration overrides
+config/local.py
+settings/local.py
+
+# ================================
+# DOCKER
+# ================================
+.dockerignore
+
+# ================================
+# IDE / EDITORS
+# ================================
+
+# VSCode
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# PyCharm
 .idea/
+*.iws
+*.iml
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
 *.swp
 *.swo
 *~
 
-# Large data files - these should not be in version control
-cache/
-data/corpus_features_output*.json
-data/words_with_freqs.json
-models/*.joblib
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
 
+# ================================
 # OS
+# ================================
+
+# macOS
 .DS_Store
-.DS_Store?
+.AppleDouble
+.LSOverride
+Icon
 ._*
+.DocumentRevisions-V100
+.fseventsd
 .Spotlight-V100
+.TemporaryItems
 .Trashes
-ehthumbs.db
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
 
-# Logs
-*.log
-logs/
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
 
-# Temporary files
-*.tmp
-*.temp
-temp/
+# ================================
+# DATABASE
+# ================================
+*.db
+*.sqlite
+*.sqlite3
+db.sqlite3
+database.db
 
-# Dependencies
+# PostgreSQL
+*.dump
+*.sql
+
+# ================================
+# SECURITY
+# ================================
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.csr
+ssl/
+certs/
+
+# Secret files
+secrets/
+.secrets
+secret.json
+credentials.json
+
+# API keys
+.apikey
+.secret
+
+# ================================
+# CI/CD & DEPLOYMENT
+# ================================
+
+# GitHub Actions artifacts
+.github/workflows/*.log
+
+# Kubernetes
+kubeconfig
+*.kubeconfig
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Ansible
+*.retry
+.vault_pass
+
+# Helm charts
+charts/
+*.tgz
+
+# ================================
+# MONITORING & PROFILING
+# ================================
+
+# Performance profiles
+*.prof
+*.pprof
+profile.svg
+
+# Memory dumps
+*.hprof
+heapdump.*
+
+# Benchmarks
+benchmark-results/
+performance-results/
+
+# ================================
+# TESTING
+# ================================
+
+# Test artifacts
+test_output/
+test_results/
+.pytest_tmp/
+
+# Load testing
+locust-results/
+load-test-reports/
+
+# ================================
+# DOCUMENTATION
+# ================================
+
+# Generated documentation
+docs/_build/
+docs/build/
+site/
+
+# ================================
+# BACKUP FILES
+# ================================
+*.bak
+*.backup
+*.orig
+*.save
+
+# ================================
+# DEPENDENCY MANAGEMENT
+# ================================
+
+# pip-tools
+requirements*.txt.lock
+
+# Poetry
+poetry.lock
+
+# Conda
+environment.yml.lock
+
+# ================================
+# NODE.JS & REACT
+# ================================
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# React build files
+pl8wrds-game/build/
+
+# Allow optimized web app data files
+!pl8wrds-game/public/pl8wrds_complete.json.gz
+!pl8wrds-game/public/words/dictionary.json
+!pl8wrds-game/public/manifest.json
+!pl8wrds-game/package.json
+!pl8wrds-game/package-lock.json
+
+# ================================
+# MISCELLANEOUS
+# ================================
+
+# Archives
+*.7z
+*.dmg
+*.gz
+!pl8wrds-game/public/*.gz  # Allow web app data files
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Compiled source
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages
+*.deb
+*.rpm
+
+# Local configuration
+local_settings.py
+local_config.py
+
+# Development notes
+NOTES.md
+TODO.md
+SCRATCH.md

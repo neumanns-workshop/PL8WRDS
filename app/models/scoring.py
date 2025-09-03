@@ -103,53 +103,25 @@ class ScoringSystemStatus(BaseModel):
     last_updated: datetime = Field(default_factory=datetime.utcnow)
 
 # Scoring prompt template for impressiveness scoring
-SCORING_PROMPT_TEMPLATE = """You are scoring word discoveries in a letter-matching word game.
+SCORING_PROMPT_TEMPLATE = """Given the rules to this travel word game, rate how impressive the proposed solution is to you on a scale 0-100.
 
-GAME RULES: Players are given a sequence of letters (like "ABC") and must THINK OF/GENERATE words that contain those letters in order (but not necessarily consecutive). For example, given letters "ABC", players might think of words like "alphabet", "fabric", "absorb", etc. The challenge is GENERATING these words from memory, not checking if a given word contains the letters.
+RULES:
+- Find a word where the license plate letters appear in order (but not necessarily consecutive)
+- Example: "CAR" matches "car", "care", "clear", "scared" 
+- More creative/unexpected solutions score higher
 
-DEFINITION: "Impressive" means a word discovery that the general person wouldn't expect - something that makes people go "wow, how did you think of that!" The more unexpected and surprising the discovery, the more impressive it is.
+EXAMPLES:
+- CAR → "car": 8
+- DOG → "dog": 5  
+- CAR → "care": 45
+- DOG → "pedagogue": 88
+- CAR → "scaramouche": 92
+- CAR → "macabre": 94
 
-Here are example scorings to calibrate your responses:
+PROMPT: {combination}
+SOLUTION: {word}
 
-Letter sequence: NXT
-Word found: next
-Score: 35
-Reasoning: Obvious choice - most players would immediately think of this word when given N-X-T.
-
-Letter sequence: VTH  
-Word found: seventh
-Score: 30
-Reasoning: Predictable discovery - common ordinal number that comes to mind quickly for V-T-H.
-
-Letter sequence: HNI
-Word found: technique  
-Score: 62
-Reasoning: Solid find - thinking of this word when given H-N-I requires moderate vocabulary depth.
-
-Letter sequence: AEJ
-Word found: hallelujah
-Score: 88
-Reasoning: Excellent discovery - coming up with this uncommon religious term from the cues A-E-J shows strong vocabulary recall.
-
-Letter sequence: VTH
-Word found: leviathan
-Score: 85
-Reasoning: Impressive generation - producing this mythological word from V-T-H demonstrates good vocabulary access.
-
-Letter sequence: NXT
-Word found: inextricable
-Score: 91
-Reasoning: Outstanding find - generating this rare, complex word from simple cues N-X-T shows exceptional vocabulary knowledge.
-
-Now score this word using the similar criteria and scoring patterns:
-
-Letter sequence: {combination}
-Word found: {word}
-
-This word is already verified as VALID for this sequence (letters appear in correct order).
-
-Score: [0-100]
-Reasoning: [Explain why this word deserves this score - how impressive is this discovery?]"""
+SCORE (0-100):"""
 
 class LLMScoringResponse(BaseModel):
     """Response format expected from LLM models."""

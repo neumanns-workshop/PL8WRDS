@@ -1,0 +1,190 @@
+# Prometheus alert rules for PL8WRDS API
+groups:
+  - name: pl8wrds.api.rules
+    rules:
+      # High error rate alert
+      - alert: HighErrorRate
+        expr: |
+          (
+            rate(pl8wrds_http_requests_total{status_code=~"5.."}[5m]) / 
+            rate(pl8wrds_http_requests_total[5m])
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "High HTTP error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} over the last 5 minutes, which is above the 5% threshold."
+          runbook_url: "https://runbooks.pl8wrds.com/high-error-rate"
+
+      # High response time alert
+      - alert: HighResponseTime
+        expr: |
+          histogram_quantile(0.95, 
+            rate(pl8wrds_http_request_duration_seconds_bucket[5m])
+          ) > 2.0
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High API response time"
+          description: "95th percentile response time is {{ $value }}s, above 2s threshold."
+          runbook_url: "https://runbooks.pl8wrds.com/high-response-time"
+
+      # Service down alert
+      - alert: ServiceDown
+        expr: up{job="pl8wrds-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: service
+        annotations:
+          summary: "PL8WRDS API service is down"
+          description: "PL8WRDS API has been down for more than 1 minute."
+          runbook_url: "https://runbooks.pl8wrds.com/service-down"
+
+      # High memory usage alert
+      - alert: HighMemoryUsage
+        expr: |
+          (pl8wrds_system_memory_usage_bytes{type="used"} / 
+           pl8wrds_system_memory_usage_bytes{type="total"}) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}, above 90% threshold."
+
+      # High CPU usage alert  
+      - alert: HighCPUUsage
+        expr: pl8wrds_system_cpu_usage_percent > 85
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}%, above 85% threshold."
+
+      # Disk space alert
+      - alert: LowDiskSpace
+        expr: |
+          (pl8wrds_system_disk_usage_bytes{type="free"} / 
+           pl8wrds_system_disk_usage_bytes{type="total"}) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          component: system
+        annotations:
+          summary: "Low disk space"
+          description: "Free disk space is {{ $value | humanizePercentage }}, below 10% threshold."
+
+  - name: pl8wrds.business.rules
+    rules:
+      # ML model failure rate
+      - alert: MLModelHighFailureRate
+        expr: |
+          (
+            rate(pl8wrds_ml_model_predictions_total{success="false"}[10m]) /
+            rate(pl8wrds_ml_model_predictions_total[10m])
+          ) > 0.1
+        for: 3m
+        labels:
+          severity: high
+          component: ml_model
+        annotations:
+          summary: "ML model high failure rate"
+          description: "ML model failure rate is {{ $value | humanizePercentage }} over the last 10 minutes."
+
+      # Low word scoring rate
+      - alert: LowWordScoringRate
+        expr: rate(pl8wrds_word_scores_generated_total[10m]) < 0.1
+        for: 10m
+        labels:
+          severity: warning
+          component: scoring
+        annotations:
+          summary: "Low word scoring rate"
+          description: "Word scoring rate is {{ $value }} per second, which may indicate issues."
+
+      # LLM service high latency
+      - alert: LLMServiceHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(pl8wrds_llm_request_duration_seconds_bucket[10m])
+          ) > 30
+        for: 5m
+        labels:
+          severity: warning
+          component: llm_service
+        annotations:
+          summary: "LLM service high latency"
+          description: "95th percentile LLM request latency is {{ $value }}s, above 30s threshold."
+
+      # Cache miss rate too high
+      - alert: HighCacheMissRate
+        expr: |
+          (
+            rate(pl8wrds_cache_operations_total{status="miss"}[10m]) /
+            rate(pl8wrds_cache_operations_total{operation="get"}[10m])
+          ) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "High cache miss rate"
+          description: "Cache miss rate is {{ $value | humanizePercentage }}, above 50% threshold."
+
+  - name: pl8wrds.health.rules
+    rules:
+      # Health check failures
+      - alert: HealthCheckFailing
+        expr: pl8wrds_health_check_status{service!="overall"} == 0
+        for: 2m
+        labels:
+          severity: high
+          component: health_check
+        annotations:
+          summary: "Health check failing for {{ $labels.service }}"
+          description: "Health check for {{ $labels.service }} has been failing for more than 2 minutes."
+
+      # Critical health check failures
+      - alert: CriticalHealthCheckFailing
+        expr: |
+          pl8wrds_health_check_status{service=~"ml_model|filesystem"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: health_check
+        annotations:
+          summary: "Critical health check failing for {{ $labels.service }}"
+          description: "Critical health check for {{ $labels.service }} has failed."
+
+  - name: pl8wrds.security.rules
+    rules:
+      # High error rate from single IP (potential attack)
+      - alert: SuspiciousTrafficPattern
+        expr: |
+          rate(pl8wrds_http_requests_total{status_code=~"4.."}[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "Suspicious traffic pattern detected"
+          description: "High rate of 4xx errors detected, which may indicate an attack."
+
+      # Too many authentication failures
+      - alert: HighAuthenticationFailures
+        expr: rate(pl8wrds_http_requests_total{status_code="401"}[5m]) > 5
+        for: 3m
+        labels:
+          severity: high
+          component: security
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failure rate is {{ $value }} per second over the last 5 minutes."

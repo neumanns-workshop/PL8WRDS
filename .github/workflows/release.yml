@@ -1,0 +1,425 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      pre_release:
+        description: 'Create pre-release'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  PYTHON_VERSION: '3.11'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Version Calculation and Validation
+  version-check:
+    name: Version Check
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install bump2version
+        run: pip install bump2version
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            # Manual trigger - calculate next version
+            current_version=$(python -c "
+            import re
+            with open('app/core/config.py', 'r') as f:
+                content = f.read()
+                match = re.search(r'app_version:\s*str\s*=\s*[\"\'](.*?)[\"\']', content)
+                if match:
+                    print(match.group(1))
+                else:
+                    print('0.1.0')
+            ")
+            
+            # Parse version and increment
+            IFS='.' read -ra VERSION_PARTS <<< "$current_version"
+            major=${VERSION_PARTS[0]}
+            minor=${VERSION_PARTS[1]}
+            patch=${VERSION_PARTS[2]%-*}
+            
+            case "${{ github.event.inputs.version_type }}" in
+              major)
+                major=$((major + 1))
+                minor=0
+                patch=0
+                ;;
+              minor)
+                minor=$((minor + 1))
+                patch=0
+                ;;
+              patch)
+                patch=$((patch + 1))
+                ;;
+            esac
+            
+            if [[ "${{ github.event.inputs.pre_release }}" == "true" ]]; then
+              new_version="${major}.${minor}.${patch}-beta"
+              is_prerelease="true"
+            else
+              new_version="${major}.${minor}.${patch}"
+              is_prerelease="false"
+            fi
+            
+          else
+            # Tag trigger - extract version from tag
+            new_version=${GITHUB_REF#refs/tags/v}
+            if [[ "$new_version" == *"-"* ]]; then
+              is_prerelease="true"
+            else
+              is_prerelease="false"
+            fi
+          fi
+          
+          echo "version=$new_version" >> $GITHUB_OUTPUT
+          echo "tag=v$new_version" >> $GITHUB_OUTPUT
+          echo "is_prerelease=$is_prerelease" >> $GITHUB_OUTPUT
+          
+          echo "Calculated version: $new_version"
+          echo "Is prerelease: $is_prerelease"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            # Generate changelog from commits since last tag
+            last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+            if [[ -n "$last_tag" ]]; then
+              changelog=$(git log --pretty=format:"- %s (%h)" ${last_tag}..HEAD)
+            else
+              changelog=$(git log --pretty=format:"- %s (%h)" --max-count=20)
+            fi
+          else
+            # For tag triggers, get commits since previous tag
+            prev_tag=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+            if [[ -n "$prev_tag" ]]; then
+              changelog=$(git log --pretty=format:"- %s (%h)" ${prev_tag}..HEAD^)
+            else
+              changelog="- Initial release"
+            fi
+          fi
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$changelog" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  # Update Version in Code
+  update-version:
+    name: Update Version
+    runs-on: ubuntu-latest
+    needs: version-check
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Update version in config
+        run: |
+          python -c "
+          import re
+          
+          # Update version in config.py
+          with open('app/core/config.py', 'r') as f:
+              content = f.read()
+          
+          content = re.sub(
+              r'(app_version:\s*str\s*=\s*[\"\']).*?([\"\'])',
+              r'\1${{ needs.version-check.outputs.version }}\2',
+              content
+          )
+          
+          with open('app/core/config.py', 'w') as f:
+              f.write(content)
+          
+          print('Updated version to ${{ needs.version-check.outputs.version }}')
+          "
+
+      - name: Create version commit and tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add app/core/config.py
+          git commit -m "chore: bump version to ${{ needs.version-check.outputs.version }}"
+          git tag ${{ needs.version-check.outputs.tag }}
+          git push origin main --tags
+
+  # Run Full Test Suite
+  test-release:
+    name: Release Test Suite
+    runs-on: ubuntu-latest
+    needs: [version-check]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run comprehensive tests
+        run: |
+          mkdir -p cache data models
+          echo '{"test": {"frequency": 1000}}' > data/words_with_freqs.json
+          echo '{"total_words": 1, "avg_frequency": 1000}' > cache/corpus_stats.json
+          echo '{"test": {"tfidf": 0.5, "length": 4}}' > cache/corpus_features.json
+          
+          pytest tests/ -v --cov=app --cov-report=xml --cov-fail-under=80
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+  # Build Release Assets
+  build-release:
+    name: Build Release
+    runs-on: ubuntu-latest
+    needs: [version-check, test-release]
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ needs.version-check.outputs.version }}
+            type=raw,value=stable,enable=${{ needs.version-check.outputs.is_prerelease == 'false' }}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ needs.version-check.outputs.version }}
+            BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            VCS_REF=${{ github.sha }}
+
+      - name: Create source distribution
+        run: |
+          pip install build
+          python -m build --sdist --wheel --outdir dist/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts-${{ needs.version-check.outputs.version }}
+          path: |
+            dist/
+            Dockerfile
+            docker-compose.yml
+
+  # Create GitHub Release
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [version-check, build-release, update-version]
+    if: always() && needs.version-check.result == 'success' && needs.build-release.result == 'success'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts-${{ needs.version-check.outputs.version }}
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat > release-notes.md << 'EOF'
+          ## What's Changed
+          
+          ${{ needs.version-check.outputs.changelog }}
+          
+          ## Docker Image
+          
+          ```bash
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.version-check.outputs.version }}
+          ```
+          
+          ## Installation
+          
+          ### Using pip
+          ```bash
+          pip install pl8wrds==${{ needs.version-check.outputs.version }}
+          ```
+          
+          ### Using Docker
+          ```bash
+          docker run -p 8000:8000 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.version-check.outputs.version }}
+          ```
+          
+          ## API Documentation
+          
+          - Interactive docs: http://localhost:8000/docs
+          - ReDoc: http://localhost:8000/redoc
+          
+          ## Checksums
+          
+          | File | SHA256 |
+          |------|--------|
+          EOF
+          
+          # Add checksums for release files
+          for file in dist/*; do
+            if [ -f "$file" ]; then
+              checksum=$(sha256sum "$file" | cut -d' ' -f1)
+              filename=$(basename "$file")
+              echo "| $filename | \`$checksum\` |" >> release-notes.md
+            fi
+          done
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.version-check.outputs.tag }}
+          name: Release ${{ needs.version-check.outputs.version }}
+          body_path: release-notes.md
+          prerelease: ${{ needs.version-check.outputs.is_prerelease == 'true' }}
+          files: |
+            dist/*
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+
+  # Deploy to Production (if stable release)
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [version-check, create-release]
+    if: needs.version-check.outputs.is_prerelease == 'false'
+    environment:
+      name: production
+      url: https://pl8wrds.com
+    
+    steps:
+      - name: Deploy to production
+        run: |
+          echo "Deploying version ${{ needs.version-check.outputs.version }} to production"
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.version-check.outputs.version }}"
+          # Add actual deployment commands here
+          
+          # Example deployment steps:
+          # - Update Kubernetes manifests
+          # - Deploy to cloud provider
+          # - Update load balancer configuration
+          # - Run health checks
+
+  # Deploy to Staging (for pre-releases)
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [version-check, create-release]
+    if: needs.version-check.outputs.is_prerelease == 'true'
+    environment:
+      name: staging
+      url: https://staging.pl8wrds.com
+    
+    steps:
+      - name: Deploy to staging
+        run: |
+          echo "Deploying version ${{ needs.version-check.outputs.version }} to staging"
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.version-check.outputs.version }}"
+          # Add actual deployment commands here
+
+  # Post-Release Tasks
+  post-release:
+    name: Post-Release Tasks
+    runs-on: ubuntu-latest
+    needs: [version-check, create-release, deploy-production, deploy-staging]
+    if: always() && needs.create-release.result == 'success'
+    
+    steps:
+      - name: Notify teams
+        run: |
+          echo "Release ${{ needs.version-check.outputs.version }} completed successfully"
+          # Add notifications here (Slack, email, etc.)
+          
+      - name: Update documentation
+        run: |
+          echo "Updating documentation for version ${{ needs.version-check.outputs.version }}"
+          # Add documentation update steps here
+          
+      - name: Create next development branch (if major/minor release)
+        if: github.event.inputs.version_type == 'major' || github.event.inputs.version_type == 'minor'
+        run: |
+          echo "Creating next development milestone"
+          # Add milestone creation logic here

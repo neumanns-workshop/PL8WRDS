@@ -1,0 +1,40 @@
+# Base requirements input file for pip-tools
+# Use: pip-compile requirements.in to generate requirements.txt
+
+# ================================
+# WEB FRAMEWORK
+# ================================
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings>=2.0.0
+
+# ================================
+# HTTP & ASYNC
+# ================================
+httpx==0.27.0
+aiofiles
+
+# ================================
+# MACHINE LEARNING
+# ================================
+scikit-learn==1.5.1
+pandas==2.2.2
+numpy==2.0.0
+joblib==1.4.2
+
+# ================================
+# DEPENDENCY INJECTION
+# ================================
+dependency-injector>=4.41.0
+
+# ================================
+# EXTERNAL APIS
+# ================================
+openai
+
+# ================================
+# CLI & UTILITIES
+# ================================
+tqdm
+click

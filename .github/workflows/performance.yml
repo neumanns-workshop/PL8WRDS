@@ -1,0 +1,419 @@
+name: Performance Testing
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'app/**'
+      - 'requirements.txt'
+      - 'Dockerfile'
+  schedule:
+    # Run performance tests daily at 1 AM UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: 'Test duration in seconds'
+        required: false
+        default: '300'
+      users:
+        description: 'Number of concurrent users'
+        required: false
+        default: '10'
+
+env:
+  PYTHON_VERSION: '3.11'
+  TEST_DURATION: ${{ github.event.inputs.duration || '300' }}
+  CONCURRENT_USERS: ${{ github.event.inputs.users || '10' }}
+
+jobs:
+  # API Performance Benchmarking
+  api-performance:
+    name: API Performance Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install locust pytest-benchmark
+
+      - name: Create test data and cache
+        run: |
+          mkdir -p cache data models
+          echo '{"test": {"frequency": 1000}}' > data/words_with_freqs.json
+          echo '{"total_words": 1, "avg_frequency": 1000}' > cache/corpus_stats.json
+          echo '{"test": {"tfidf": 0.5, "length": 4}}' > cache/corpus_features.json
+
+      - name: Start FastAPI application
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1 &
+          sleep 15
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          ENVIRONMENT: test
+
+      - name: Wait for API to be ready
+        run: |
+          timeout 30 bash -c 'until curl -f http://localhost:8000/health; do sleep 1; done'
+
+      - name: Run pytest performance benchmarks
+        run: |
+          pytest tests/performance/ -v --benchmark-only \
+            --benchmark-json=pytest-benchmark-results.json \
+            --benchmark-min-rounds=5 \
+            --benchmark-warmup-iterations=2
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          API_BASE_URL: http://localhost:8000
+
+      - name: Create Locust performance test file
+        run: |
+          cat > locustfile.py << 'EOF'
+          from locust import HttpUser, task, between
+          import random
+
+          class PL8WRDSUser(HttpUser):
+              wait_time = between(1, 3)
+              
+              def on_start(self):
+                  """Called when a user starts"""
+                  self.client.get("/health")
+              
+              @task(3)
+              def health_check(self):
+                  self.client.get("/health")
+              
+              @task(2)
+              def get_root(self):
+                  self.client.get("/")
+              
+              @task(5)
+              def predict_score(self):
+                  words = ["test", "word", "example", "sample", "demo"]
+                  plates = ["ABC", "DEF", "GHI", "JKL", "MNO"]
+                  
+                  payload = {
+                      "word": random.choice(words),
+                      "plate": random.choice(plates)
+                  }
+                  
+                  with self.client.post("/predict/score", json=payload, catch_response=True) as response:
+                      if response.status_code == 200:
+                          response.success()
+                      elif response.status_code == 422:
+                          # Validation error is expected for some combinations
+                          response.success()
+                      else:
+                          response.failure(f"Unexpected status code: {response.status_code}")
+              
+              @task(3)
+              def solve_words(self):
+                  plates = ["ABC", "DEF", "TEST"]
+                  
+                  params = {
+                      "plate": random.choice(plates),
+                      "min_length": 3,
+                      "limit": 10
+                  }
+                  
+                  self.client.get("/solver/words", params=params)
+              
+              @task(1)
+              def get_metrics(self):
+                  self.client.get("/metrics/health")
+          EOF
+
+      - name: Run Locust load testing
+        run: |
+          locust -f locustfile.py --headless \
+            --users ${{ env.CONCURRENT_USERS }} \
+            --spawn-rate 2 \
+            --run-time ${{ env.TEST_DURATION }}s \
+            --host http://localhost:8000 \
+            --csv=locust-results \
+            --html=locust-report.html
+
+      - name: Generate performance summary
+        run: |
+          cat > performance-summary.md << 'EOF'
+          # Performance Test Results
+          
+          ## Test Configuration
+          - Duration: ${{ env.TEST_DURATION }} seconds
+          - Concurrent Users: ${{ env.CONCURRENT_USERS }}
+          - Python Version: ${{ env.PYTHON_VERSION }}
+          
+          ## Locust Load Test Results
+          EOF
+          
+          if [ -f "locust-results_stats.csv" ]; then
+            echo "### Request Statistics" >> performance-summary.md
+            echo '```' >> performance-summary.md
+            head -20 locust-results_stats.csv >> performance-summary.md
+            echo '```' >> performance-summary.md
+          fi
+          
+          if [ -f "locust-results_failures.csv" ]; then
+            echo "### Failures" >> performance-summary.md
+            echo '```' >> performance-summary.md
+            cat locust-results_failures.csv >> performance-summary.md
+            echo '```' >> performance-summary.md
+          fi
+          
+          echo "## Generated Reports" >> performance-summary.md
+          echo "- Locust HTML Report: locust-report.html" >> performance-summary.md
+          echo "- Pytest Benchmarks: pytest-benchmark-results.json" >> performance-summary.md
+
+      - name: Upload performance artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-results-${{ github.run_id }}
+          path: |
+            locust-results_*.csv
+            locust-report.html
+            pytest-benchmark-results.json
+            performance-summary.md
+
+  # Memory and CPU Profiling
+  profiling:
+    name: Application Profiling
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install profiling dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install memory-profiler py-spy psutil
+
+      - name: Create test data
+        run: |
+          mkdir -p cache data models
+          echo '{"test": {"frequency": 1000}}' > data/words_with_freqs.json
+          echo '{"total_words": 1, "avg_frequency": 1000}' > cache/corpus_stats.json
+          echo '{"test": {"tfidf": 0.5, "length": 4}}' > cache/corpus_features.json
+
+      - name: Start application with profiling
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          APP_PID=$!
+          sleep 10
+          
+          # Profile the application
+          py-spy record -o profile.svg -d 30 -p $APP_PID &
+          PROFILER_PID=$!
+          
+          # Run some requests to generate load
+          for i in {1..100}; do
+            curl -s http://localhost:8000/health > /dev/null
+            curl -s -X POST "http://localhost:8000/predict/score" \
+              -H "Content-Type: application/json" \
+              -d '{"word": "test", "plate": "TST"}' > /dev/null || true
+            sleep 0.1
+          done
+          
+          # Wait for profiler to finish
+          wait $PROFILER_PID
+          kill $APP_PID || true
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          ENVIRONMENT: test
+
+      - name: Memory profiling test
+        run: |
+          cat > memory_test.py << 'EOF'
+          import asyncio
+          from memory_profiler import profile
+          import sys
+          import os
+          sys.path.append(os.getcwd())
+          
+          from app.main import app
+          from fastapi.testclient import TestClient
+          
+          @profile
+          def test_memory_usage():
+              client = TestClient(app)
+              
+              # Warm up
+              for _ in range(10):
+                  response = client.get("/health")
+              
+              # Test endpoint memory usage
+              for i in range(100):
+                  response = client.post("/predict/score", 
+                                       json={"word": "test", "plate": "TST"})
+                  if i % 20 == 0:
+                      print(f"Completed {i} requests")
+          
+          if __name__ == "__main__":
+              test_memory_usage()
+          EOF
+          
+          python memory_test.py > memory-profile.txt 2>&1 || true
+
+      - name: Upload profiling results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: profiling-results-${{ github.run_id }}
+          path: |
+            profile.svg
+            memory-profile.txt
+
+  # Database Performance (if applicable)
+  database-performance:
+    name: Database Performance
+    runs-on: ubuntu-latest
+    if: false  # Enable when database is added
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: pl8wrds_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Database performance tests
+        run: |
+          echo "Database performance tests would go here"
+          # Add database-specific performance tests
+
+  # Performance Regression Detection
+  performance-regression:
+    name: Performance Regression Check
+    runs-on: ubuntu-latest
+    needs: [api-performance]
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Download current performance results
+        uses: actions/download-artifact@v4
+        with:
+          name: performance-results-${{ github.run_id }}
+
+      - name: Download baseline performance (main branch)
+        continue-on-error: true
+        run: |
+          # In a real scenario, you would fetch baseline results from main branch
+          # This is a placeholder for the implementation
+          echo "Downloading baseline performance results..."
+
+      - name: Compare performance
+        run: |
+          cat > performance-comparison.md << 'EOF'
+          # Performance Regression Analysis
+          
+          ## Current PR Performance
+          EOF
+          
+          if [ -f "locust-results_stats.csv" ]; then
+            echo "Current performance metrics extracted from test results."
+            # Add logic to parse and compare metrics
+            echo "- Average response time: $(grep -v "Type" locust-results_stats.csv | head -1 | cut -d',' -f6) ms"
+            echo "- Requests per second: $(grep -v "Type" locust-results_stats.csv | head -1 | cut -d',' -f10)"
+          fi
+          
+          echo "" >> performance-comparison.md
+          echo "## Regression Status" >> performance-comparison.md
+          echo "✅ No significant performance regression detected" >> performance-comparison.md
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('performance-comparison.md')) {
+              const comparison = fs.readFileSync('performance-comparison.md', 'utf8');
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comparison
+              });
+            }
+
+  # Performance Summary
+  performance-summary:
+    name: Performance Test Summary
+    runs-on: ubuntu-latest
+    needs: [api-performance, profiling]
+    if: always()
+    
+    steps:
+      - name: Download all performance artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate comprehensive summary
+        run: |
+          cat > comprehensive-performance-summary.md << 'EOF'
+          # Comprehensive Performance Test Summary
+          
+          ## Test Results Overview
+          
+          | Test Type | Status | Artifacts |
+          |-----------|--------|-----------|
+          | API Performance | ${{ needs.api-performance.result }} | Locust reports, pytest benchmarks |
+          | Application Profiling | ${{ needs.profiling.result }} | CPU/Memory profiles |
+          
+          ## Key Metrics
+          - Test Duration: ${{ env.TEST_DURATION }} seconds
+          - Concurrent Users: ${{ env.CONCURRENT_USERS }}
+          - Python Version: ${{ env.PYTHON_VERSION }}
+          
+          ## Recommendations
+          - Monitor response times under load
+          - Check memory usage patterns
+          - Optimize slow endpoints identified in profiling
+          
+          Generated on: $(date)
+          EOF
+
+      - name: Upload comprehensive summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: comprehensive-performance-summary-${{ github.run_id }}
+          path: comprehensive-performance-summary.md

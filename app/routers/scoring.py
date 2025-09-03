@@ -3,8 +3,9 @@ FastAPI router for word scoring endpoints.
 """
 
 import logging
-from fastapi import APIRouter, HTTPException, BackgroundTasks, Query
+from fastapi import APIRouter, HTTPException, BackgroundTasks, Query, Depends
 from typing import List, Optional
+from dependency_injector.wiring import Provide, inject
 
 from ..models.scoring import (
     ScoringRequest,
@@ -16,7 +17,8 @@ from ..models.scoring import (
     ScoringSystemStatus,
     ModelAvailability
 )
-from ..services.scoring_service import scoring_service
+from ..core.container import Container
+from ..application.services import WordScoringService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,9 +27,25 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/scoring", tags=["scoring"])
 
 @router.get("/status", response_model=ScoringSystemStatus)
-async def get_system_status():
+@inject
+async def get_system_status(
+    word_scoring_service: WordScoringService = Depends(Provide[Container.word_scoring_service])
+):
     """Get the current status of the scoring system."""
-    return await scoring_service.check_system_status()
+    try:
+        # TODO: Implement system status check in WordScoringService
+        # For now, return a basic status
+        models = [ScoringModel.GRANITE]  # Default models
+        status = await word_scoring_service.check_system_health([model.value for model in models])
+        return status
+    except Exception as e:
+        logger.error(f"Failed to get system status: {e}")
+        # Return a default error status
+        return ScoringSystemStatus(
+            ollama_running=False,
+            models=[],
+            active_sessions=0
+        )
 
 @router.post("/score-word", response_model=WordScore)
 async def score_single_word(request: ScoringRequest):

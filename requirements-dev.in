@@ -1,0 +1,55 @@
+# Development requirements input file for pip-tools
+# Use: pip-compile requirements-dev.in to generate requirements-dev.txt
+
+# Include base requirements
+-r requirements.in
+
+# ================================
+# CODE QUALITY
+# ================================
+ruff
+black
+mypy
+types-requests
+
+# ================================
+# TESTING
+# ================================
+pytest
+pytest-asyncio
+pytest-mock
+pytest-cov
+pytest-xdist
+pytest-benchmark
+factory-boy
+faker
+freezegun
+
+# ================================
+# DEBUGGING
+# ================================
+ipython
+ipdb
+
+# ================================
+# PERFORMANCE TESTING
+# ================================
+locust
+memory-profiler
+py-spy
+
+# ================================
+# SECURITY
+# ================================
+bandit
+safety
+semgrep
+
+# ================================
+# DEVELOPMENT UTILITIES
+# ================================
+pre-commit
+watchfiles
+python-dotenv
+build
+bump2version

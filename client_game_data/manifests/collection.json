@@ -1,0 +1,94 @@
+{
+  "collection_info": {
+    "name": "PL8WRDS Complete Collection",
+    "total_plates": 15715,
+    "collection_id": "pl8wrds_v4",
+    "difficulty_range": "Continuous 32-52",
+    "estimated_completion_time": "500+ hours"
+  },
+  "rarity_system": {
+    "type": "standard_deviation_based",
+    "mean": 41.04,
+    "std_dev": 2.8,
+    "tier_definitions": {
+      "ultra_rare": {
+        "description": "Ultra Rare (> \u03bc + 2\u03c3)",
+        "range": "> 46.64",
+        "count": 696,
+        "percentage": 4.4
+      },
+      "very_rare": {
+        "description": "Very Rare (\u03bc + 1\u03c3 to \u03bc + 2\u03c3)",
+        "range": "43.84 - 46.64",
+        "count": 1777,
+        "percentage": 11.3
+      },
+      "rare": {
+        "description": "Rare (\u03bc + 0.5\u03c3 to \u03bc + 1\u03c3)",
+        "range": "42.44 - 43.84",
+        "count": 1882,
+        "percentage": 12.0
+      },
+      "uncommon": {
+        "description": "Uncommon (\u03bc to \u03bc + 0.5\u03c3)",
+        "range": "41.04 - 42.44",
+        "count": 2697,
+        "percentage": 17.2
+      },
+      "common": {
+        "description": "Common (\u2264 \u03bc)",
+        "range": "\u2264 41.04",
+        "count": 8663,
+        "percentage": 55.1
+      }
+    },
+    "explanation": "Tiers based on statistical distribution using standard deviations from mean"
+  },
+  "starter_collection": {
+    "recommended_first_10": [
+      4346,
+      10859,
+      3853,
+      13517,
+      14167,
+      14527,
+      7541,
+      5507,
+      8137,
+      10555
+    ],
+    "beginner_friendly": [
+      7541,
+      5507,
+      8137,
+      10555,
+      6320,
+      10551,
+      11165,
+      5086,
+      4495,
+      9567,
+      5027,
+      9688,
+      10516,
+      8411,
+      11524,
+      11576,
+      3905,
+      491,
+      2032,
+      5408
+    ]
+  },
+  "achievement_targets": {
+    "rare_hunter": [
+      15187,
+      15264,
+      15317,
+      15324,
+      15445
+    ],
+    "completionist": "All plates collected",
+    "word_master": "Find 10+ solutions per plate for 100 plates"
+  }
+}

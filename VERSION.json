@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "build_date": "2025-09-02T17:01:31.975806",
+  "data_version": "4.1",
+  "features": [
+    "Complete English word solution coverage",
+    "Statistical rarity system",
+    "Ultra-optimized storage (96% reduction)",
+    "Client-side ready architecture",
+    "Collectible plate system with unique IDs"
+  ],
+  "statistics": {
+    "total_plates": 15715,
+    "total_solutions": 7038012,
+    "unique_words": 103949,
+    "compression_ratio": 0.96,
+    "final_size_mb": 27
+  }
+}

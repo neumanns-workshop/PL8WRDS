@@ -1,0 +1,90 @@
+# Production Dependencies for PL8WRDS
+# Minimal dependencies for production deployment
+
+# ================================
+# CORE APPLICATION DEPENDENCIES
+# ================================
+fastapi>=0.103.0,<0.104.0
+uvicorn[standard]>=0.23.0,<0.24.0
+pydantic>=2.4.0,<3.0.0
+pydantic-settings>=2.0.0,<3.0.0
+
+# ================================
+# HTTP CLIENT & ASYNC SUPPORT
+# ================================
+httpx>=0.27.0,<0.28.0
+aiofiles>=23.2.0,<24.0.0
+
+# ================================
+# MACHINE LEARNING & DATA
+# ================================
+scikit-learn>=1.5.1,<1.6.0
+pandas>=2.2.0,<2.3.0
+numpy>=2.0.0,<2.1.0
+joblib>=1.4.0,<1.5.0
+
+# ================================
+# DEPENDENCY INJECTION
+# ================================
+dependency-injector>=4.41.0,<5.0.0
+
+# ================================
+# EXTERNAL API CLIENTS
+# ================================
+openai>=1.0.0,<2.0.0
+
+# ================================
+# PRODUCTION SERVER
+# ================================
+gunicorn>=21.2.0,<22.0.0
+
+# ================================
+# MONITORING & OBSERVABILITY
+# ================================
+# Metrics and health checks
+prometheus-client>=0.17.0,<0.18.0
+psutil>=5.9.0,<6.0.0
+
+# Structured logging
+structlog>=23.2.0,<24.0.0
+python-json-logger>=2.0.0,<3.0.0
+
+# ================================
+# SECURITY & PERFORMANCE
+# ================================
+# Security headers and CORS
+python-multipart>=0.0.6,<0.1.0
+python-jose[cryptography]>=3.3.0,<4.0.0
+passlib[bcrypt]>=1.7.4,<2.0.0
+
+# Compression
+brotli>=1.1.0,<2.0.0
+
+# ================================
+# CACHING & DATABASE
+# ================================
+# Redis for caching
+redis>=5.0.0,<6.0.0
+hiredis>=2.2.0,<3.0.0
+
+# Database drivers (when database is added)
+# psycopg2-binary>=2.9.0,<3.0.0
+# sqlalchemy>=2.0.0,<2.1.0
+
+# ================================
+# CONFIGURATION & UTILITIES
+# ================================
+python-dotenv>=1.0.0,<2.0.0
+click>=8.1.0,<9.0.0
+tqdm>=4.66.0,<5.0.0
+
+# ================================
+# ERROR TRACKING (Optional)
+# ================================
+# Uncomment if using Sentry for error tracking
+# sentry-sdk[fastapi]>=1.32.0,<2.0.0
+
+# ================================
+# TIMEZONE SUPPORT
+# ================================
+pytz>=2023.3

@@ -1,0 +1,174 @@
+#!/usr/bin/env python3
+"""
+Master Model Rebuild Pipeline for PL8WRDS
+==========================================
+
+This script rebuilds all scoring models from scratch in the correct order.
+Run this whenever you:
+- Change the word corpus (words_with_freqs.json)
+- Want to ensure models are up-to-date
+- Set up a new environment
+
+Models rebuilt:
+1. Information Content Model (comprehensive plate coverage)
+2. Orthographic Complexity Model (n-gram analysis)
+3. Frequency Statistics (computed on-demand by frequency_scorer)
+
+Usage:
+    python rebuild_all_models.py [--quick]
+    
+Options:
+    --quick    Build with reduced plate coverage for faster testing
+"""
+
+import sys
+import time
+import argparse
+from pathlib import Path
+import subprocess
+import json
+
+def run_script(script_name, description, show_output=True):
+    """Run a Python script and handle errors."""
+    print(f"\n{'='*60}")
+    print(f"🔧 {description}")
+    print(f"{'='*60}")
+    
+    start_time = time.time()
+    
+    try:
+        if show_output:
+            # Run with real-time output
+            result = subprocess.run([sys.executable, script_name], 
+                                  cwd=Path(__file__).parent,
+                                  check=True)
+        else:
+            # Run quietly and just report result
+            result = subprocess.run([sys.executable, script_name], 
+                                  cwd=Path(__file__).parent,
+                                  capture_output=True, 
+                                  text=True,
+                                  check=True)
+            
+        elapsed = time.time() - start_time
+        print(f"✅ {description} completed in {elapsed:.1f}s")
+        return True
+        
+    except subprocess.CalledProcessError as e:
+        elapsed = time.time() - start_time
+        print(f"❌ {description} failed after {elapsed:.1f}s")
+        if hasattr(e, 'stdout') and e.stdout:
+            print("STDOUT:", e.stdout)
+        if hasattr(e, 'stderr') and e.stderr:
+            print("STDERR:", e.stderr)
+        return False
+
+def check_corpus():
+    """Verify the word corpus is available."""
+    corpus_path = Path("data/words_with_freqs.json")
+    
+    if not corpus_path.exists():
+        print(f"❌ Word corpus not found: {corpus_path}")
+        print("Please ensure data/words_with_freqs.json exists before rebuilding models.")
+        return False
+    
+    try:
+        with open(corpus_path) as f:
+            data = json.load(f)
+            word_count = len(data)
+            
+        print(f"✅ Word corpus found: {word_count:,} words in {corpus_path}")
+        
+        if word_count < 10000:
+            print(f"⚠️  Warning: Only {word_count:,} words found. Expected 70k+")
+            
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error reading word corpus: {e}")
+        return False
+
+def check_existing_models():
+    """Check what models currently exist."""
+    models = {
+        "information_model.json": "Information Content Model",
+        "orthographic_model.json": "Orthographic Complexity Model", 
+        "frequency_stats.json": "Frequency Statistics Model"
+    }
+    
+    print(f"\n📋 CURRENT MODEL STATUS:")
+    print("-" * 40)
+    
+    for filename, description in models.items():
+        path = Path(filename)
+        if path.exists():
+            size_mb = path.stat().st_size / 1024 / 1024
+            mtime = time.ctime(path.stat().st_mtime)
+            print(f"✅ {description}: {size_mb:.1f}MB (modified: {mtime})")
+        else:
+            print(f"❌ {description}: Not found")
+
+def main():
+    parser = argparse.ArgumentParser(description="Rebuild all PL8WRDS scoring models")
+    parser.add_argument("--quick", action="store_true", 
+                      help="Quick rebuild with reduced coverage for testing")
+    args = parser.parse_args()
+    
+    print("🎯 PL8WRDS MODEL REBUILD PIPELINE")
+    print("=" * 60)
+    
+    # Pre-flight checks
+    if not check_corpus():
+        sys.exit(1)
+    
+    check_existing_models()
+    
+    print(f"\n🚀 Starting {'QUICK' if args.quick else 'FULL'} model rebuild...")
+    start_total = time.time()
+    
+    success_count = 0
+    total_steps = 2
+    
+    # Step 1: Information Content Model
+    script_name = "build_comprehensive_information_model.py"
+    if args.quick:
+        # Note: The comprehensive script doesn't have a quick mode, 
+        # but it's already efficient enough for development
+        pass
+        
+    if run_script(script_name, "Building Information Content Model"):
+        success_count += 1
+    
+    # Step 2: Orthographic Complexity Model
+    script_name = "build_orthographic_model.py"
+    if run_script(script_name, "Building Orthographic Complexity Model"):
+        success_count += 1
+    
+    # Step 3: Frequency Statistics (auto-generated on first use)
+    print(f"\n{'='*60}")
+    print("📊 Frequency Statistics Model")
+    print(f"{'='*60}")
+    print("✅ Frequency stats are auto-generated by frequency_scorer on first use")
+    print("   No separate build step required.")
+    
+    # Final report
+    total_time = time.time() - start_total
+    print(f"\n{'='*60}")
+    print("🏁 REBUILD PIPELINE COMPLETE")
+    print(f"{'='*60}")
+    print(f"⏱️  Total time: {total_time/60:.1f} minutes")
+    print(f"✅ Successful: {success_count}/{total_steps} models")
+    
+    if success_count == total_steps:
+        print("🎉 All models rebuilt successfully!")
+        print("\n🚀 You can now start the API server:")
+        print("   python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000")
+    else:
+        print("❌ Some models failed to rebuild. Check the errors above.")
+        sys.exit(1)
+    
+    # Final model status check
+    check_existing_models()
+
+if __name__ == "__main__":
+    main()

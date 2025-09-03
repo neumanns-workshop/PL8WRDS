@@ -1,9 +1,10 @@
 import logging
 import statistics
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 from pydantic import BaseModel
 from typing import List, Optional
 from enum import Enum
+from dependency_injector.wiring import Provide, inject
 
 from ..services.solver_service import solve_combination
 
@@ -61,6 +62,7 @@ async def solve_combination_endpoint(
     """
     logger.info(f"Received solve request for combination: '{combination}' with mode: '{mode}'")
     
+    # Use the original working function
     matches = solve_combination(combination, mode.value)
     match_count = len(matches)
     

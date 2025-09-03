@@ -1,0 +1,330 @@
+name: Security Scanning
+
+on:
+  schedule:
+    # Run security scans daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # Dependency Vulnerability Scanning
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install safety pip-audit
+
+      - name: Run Safety check
+        continue-on-error: true
+        run: |
+          safety check --json --output safety-report.json
+          safety check --short-report
+
+      - name: Run pip-audit
+        continue-on-error: true
+        run: |
+          pip-audit --format=json --output=pip-audit-report.json
+          pip-audit --format=cyclonedx-json --output=pip-audit-cyclonedx.json
+          pip-audit
+
+      - name: Upload vulnerability reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vulnerability-reports-${{ github.run_id }}
+          path: |
+            safety-report.json
+            pip-audit-report.json
+            pip-audit-cyclonedx.json
+
+  # Code Security Analysis
+  code-security:
+    name: Code Security Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit[toml] semgrep
+
+      - name: Run Bandit security scan
+        continue-on-error: true
+        run: |
+          bandit -r app -f json -o bandit-report.json
+          bandit -r app -f txt
+
+      - name: Run Semgrep security scan
+        continue-on-error: true
+        run: |
+          python -m semgrep --config=auto --json --output=semgrep-report.json app
+          python -m semgrep --config=auto app
+
+      - name: Upload security scan reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-scan-reports-${{ github.run_id }}
+          path: |
+            bandit-report.json
+            semgrep-report.json
+
+  # Secret Detection
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run TruffleHog secret scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: Run GitLeaks secret detection
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Docker Image Security Scan
+  docker-security:
+    name: Docker Image Security
+    runs-on: ubuntu-latest
+    needs: []
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image for scanning
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: pl8wrds:security-scan
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'pl8wrds:security-scan'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'json'
+          output: 'trivy-fs-results.json'
+
+      - name: Upload Docker security scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-security-reports-${{ github.run_id }}
+          path: |
+            trivy-results.sarif
+            trivy-fs-results.json
+
+  # SAST (Static Application Security Testing)
+  sast-analysis:
+    name: Static Application Security Testing
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: python
+          queries: security-extended,security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:python"
+
+  # License Compliance Check
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pip-licenses licensecheck
+
+      - name: Check licenses with pip-licenses
+        run: |
+          pip-licenses --format=json --output-file=licenses.json
+          pip-licenses
+
+      - name: Run license compatibility check
+        continue-on-error: true
+        run: |
+          licensecheck --zero
+
+      - name: Upload license reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: license-reports-${{ github.run_id }}
+          path: licenses.json
+
+  # Security Summary Report
+  security-report:
+    name: Security Summary Report
+    runs-on: ubuntu-latest
+    needs: [dependency-scan, code-security, secret-scan, docker-security, license-check]
+    if: always()
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate security summary
+        run: |
+          echo "# Security Scan Summary" > security-summary.md
+          echo "" >> security-summary.md
+          echo "## Scan Results" >> security-summary.md
+          echo "" >> security-summary.md
+          echo "| Check | Status |" >> security-summary.md
+          echo "|-------|--------|" >> security-summary.md
+          echo "| Dependency Scan | ${{ needs.dependency-scan.result }} |" >> security-summary.md
+          echo "| Code Security | ${{ needs.code-security.result }} |" >> security-summary.md
+          echo "| Secret Detection | ${{ needs.secret-scan.result }} |" >> security-summary.md
+          echo "| Docker Security | ${{ needs.docker-security.result }} |" >> security-summary.md
+          echo "| License Check | ${{ needs.license-check.result }} |" >> security-summary.md
+          echo "" >> security-summary.md
+          echo "Generated on: $(date)" >> security-summary.md
+
+      - name: Upload security summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-summary-${{ github.run_id }}
+          path: security-summary.md
+
+      - name: Comment PR with security summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('security-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+
+  # Dependency Update PR Creation
+  dependency-update:
+    name: Create Dependency Update PR
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install pip-tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-tools
+
+      - name: Update dependencies
+        run: |
+          pip-compile --upgrade requirements.in
+          pip-compile --upgrade requirements-dev.in
+
+      - name: Create Pull Request for dependency updates
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update dependencies'
+          title: 'chore: automated dependency updates'
+          body: |
+            Automated dependency updates generated by security workflow.
+            
+            Please review the changes and ensure all tests pass before merging.
+          branch: automated/dependency-updates
+          delete-branch: true
