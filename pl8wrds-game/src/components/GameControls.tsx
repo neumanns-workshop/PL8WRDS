@@ -1,6 +1,6 @@
 // GameControls component - Game control buttons and actions
 import React from 'react';
-import { RotateCcw } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface GameControlsProps {
   gameStatus: 'idle' | 'playing' | 'completed';
@@ -20,7 +20,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         className="control-button new-game-button"
         title="New Game (Spacebar)"
       >
-        <RotateCcw size={24} />
+        <MapPin size={24} />
       </button>
     </div>
   );

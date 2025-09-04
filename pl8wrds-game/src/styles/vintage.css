@@ -3,32 +3,65 @@
 
 /* CSS Custom Properties - Theme Variables */
 :root {
-  /* Colors - Vintage Highway Map Palette */
-  --color-background: #F5F1E8;
-  --color-surface: #FFFFFF;
-  --color-surface-variant: #FAFAF9;
+  /* Authentic Rand McNally Atlas Colors */
+  --color-background: hsl(45, 30%, 90%);    /* Warm atlas paper */
+  --color-surface: hsl(45, 35%, 88%);       /* Warm atlas header surface */
+  --color-surface-variant: hsl(45, 20%, 92%);
   
-  --color-primary: #1B4F72;
-  --color-secondary: #C0392B;  
-  --color-accent: #27AE60;
+  --color-primary: hsl(210, 70%, 45%);      /* Rich atlas blue */
+  --color-secondary: hsl(355, 80%, 50%);    /* Bold Rand McNally red */ 
+  --color-accent: hsl(140, 50%, 40%);       /* Highway route green */
   
-  --color-text: #2C3E50;
-  --color-text-muted: #7F8C8D;
-  --color-text-on-primary: #FFFFFF;
+  --color-text: hsl(0, 0%, 15%);            /* Deep black text */
+  --color-text-muted: hsl(210, 20%, 45%);
+  --color-text-on-primary: hsl(45, 25%, 95%);
   
-  --color-success: #F39C12;
-  --color-warning: #E74C3C;
-  --color-border: #BDC3C7;
+  --color-success: hsl(35, 60%, 50%);       /* Warm success */
+  --color-warning: hsl(5, 70%, 55%);        /* Alert red */
+  --color-border: hsl(210, 25%, 65%);
   
-  --color-plate-frame: #FFFFFF;
-  --color-plate-letters: #2C3E50;
-  --color-plate-border: #BDC3C7;
+  /* Matte Vintage License Plate Colors - Understated */
+  --color-plate-surface: hsl(45, 35%, 55%);      /* Subdued golden base */
+  --color-plate-aged: hsl(42, 30%, 50%);         /* Matte weathered tone */
+  --color-plate-letters: hsl(25, 35%, 15%);      /* Rich dark brown */
+  --color-plate-border: hsl(42, 25%, 45%);       /* Muted border */
+  --color-plate-ridge: hsl(45, 20%, 65%);        /* Subtle matte ridge */
+  --color-plate-shadow: hsl(40, 25%, 40%);       /* Soft shadow recesses */
+  --color-plate-lip: hsl(44, 20%, 50%);          /* Very subtle lip */
+  --color-plate-patina: hsl(20, 30%, 40%);       /* Understated aging */
   
-  /* Typography */
-  --font-heading: "Inter", system-ui, -apple-system, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: "Fira Code", "Monaco", "Consolas", monospace;
-  --font-plate: "Arial Black", "Arial", sans-serif;
+  /* Kodachrome Paper Textures - Desaturated Vintage */
+  --color-paper-cream: hsl(45, 25%, 92%);
+  --color-paper-aged: hsl(42, 20%, 87%);
+  --color-paper-worn: hsl(38, 18%, 82%);
+  
+  /* Authentic Rand McNally Atlas Colors - Based on Vintage Covers */
+  --color-atlas-red: hsl(355, 80%, 50%);     /* Bold banner red */
+  --color-atlas-blue: hsl(210, 70%, 45%);    /* Rich map blue */
+  --color-atlas-teal: hsl(185, 60%, 45%);    /* Signature Rand McNally teal */
+  --color-atlas-yellow: hsl(52, 95%, 55%);   /* Bright atlas yellow */
+  --color-atlas-dark: hsl(0, 0%, 15%);       /* Deep black text */
+  --color-atlas-cream: hsl(45, 25%, 95%);    /* Atlas paper cream */
+  
+  /* AUTHENTIC HEADER COLOR SCHEMES - Choose One */
+  
+  /* Scheme 1: Classic Teal + Red (Most Authentic) */
+  --header-bg: var(--color-atlas-teal);
+  --header-text: var(--color-atlas-cream);
+  --header-accent: var(--color-atlas-red);
+  
+  /* Dynamic Plate Variations - Atlas Style */
+  --color-plate-red-variant: hsl(355, 65%, 55%);   /* Atlas red plates */
+  --color-plate-blue-variant: hsl(210, 55%, 50%);  /* Atlas blue plates */
+  --color-plate-cream-variant: hsl(45, 40%, 80%);  /* Warm atlas cream plates */
+  
+  /* Authentic Rand McNally Typography System */
+  --font-display: "Impact", "Anton", "Oswald", "Franklin Gothic Demi Cond", "Arial Black", sans-serif;  /* Bold industrial display */
+  --font-heading: "Impact", "Anton", "Oswald", "Franklin Gothic Demi", "Arial Black", sans-serif;       /* Bold condensed headlines */
+  --font-body: "Franklin Gothic", "Arial", "Helvetica", sans-serif;                                      /* Clean industrial body */
+  --font-mono: "Courier New", "Monaco", "Consolas", monospace;                                          /* Typewriter/technical */
+  --font-plate: "Impact", "Anton", "Oswald", "Franklin Gothic Demi Cond", "Arial Black", sans-serif;   /* Bold industrial plates */
+  --font-atlas-title: "Impact", "Anton", "Oswald", "League Gothic", "Franklin Gothic Extra Condensed", "Arial Black", "Helvetica Neue Condensed Bold", sans-serif; /* Authentic 1938 Rand McNally style */
   
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -54,10 +87,57 @@
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   
-  /* Shadows */
+  /* Shadows - Authentic Vintage Effects */
   --shadow-sm: 0 1px 2px 0 rgba(44, 62, 80, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(44, 62, 80, 0.1), 0 2px 4px -1px rgba(44, 62, 80, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(44, 62, 80, 0.1), 0 4px 6px -2px rgba(44, 62, 80, 0.05);
+  
+  /* Embossed Effects - License Plate Letters */
+  --shadow-embossed: 
+    0 1px 0 rgba(255, 255, 255, 0.8),
+    0 -1px 0 rgba(0, 0, 0, 0.2),
+    1px 0 0 rgba(255, 255, 255, 0.6),
+    -1px 0 0 rgba(0, 0, 0, 0.15),
+    0 2px 3px rgba(0, 0, 0, 0.3);
+  
+  /* Metal Border Effects */
+  --shadow-metal:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+    
+  /* Paper Aging Filters */
+  --filter-aged-paper: sepia(15%) contrast(105%) brightness(98%) saturate(85%);
+  --filter-worn-paper: sepia(25%) contrast(102%) brightness(95%) saturate(80%);
+  --filter-vintage-photo: sepia(30%) contrast(110%) brightness(90%) saturate(75%);
+  
+  /* Faint Map Background Elements */
+  --map-grid-opacity: 0.03;
+  --map-line-color: #8B4513;
+  --map-text-opacity: 0.02;
+  
+  /* Dynamic Map Flyover System */
+  --map-base-opacity: 0.13;  /* More visible for color pop */
+  --map-hover-opacity: 0.18; /* Enhanced on hover */
+  --flyover-duration: 480s; /* Much slower for closer zoom */
+  --flyover-altitude: 2.4;  /* Closer altitude for more detail */
+  --flyover-distance: 70%;  /* Longer flight paths */
+  
+  /* Color Enhancement for Visibility - More Pop! */
+  --map-contrast-filter: contrast(135%) saturate(145%) brightness(108%) hue-rotate(2deg);
+  
+  /* Flight Route Variations - Slower for Closer Zoom */
+  --flyover-route-1-duration: 480s;  /* West to East original */
+  --flyover-route-2-duration: 520s;  /* North to South */  
+  --flyover-route-3-duration: 450s;  /* Southwest to Northeast diagonal */
+  --flyover-route-4-duration: 540s;  /* Southeast to Northwest diagonal */
+  --flyover-route-5-duration: 420s;  /* Random curved path */
+  --flyover-route-6-duration: 500s;  /* Northern transcontinental */
+  --flyover-route-7-duration: 510s;  /* Southern transcontinental */
+  --flyover-route-8-duration: 490s;  /* Central plains route */
+  --flyover-route-9-duration: 485s;  /* East to West return */
+  --flyover-route-10-duration: 430s; /* Random curved trajectory */
+  --flyover-route-11-duration: 560s; /* Serpentine exploration */
 }
 
 /* Reset & Base Styles */
@@ -71,11 +151,265 @@ body {
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--text-base);
-  line-height: 1.6;
+  line-height: 1.65;  /* Better readability for serif */
   color: var(--color-text);
-  background: var(--color-background);
+  background: var(--color-background);  /* Warm atlas paper background */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow-x: hidden;
+  font-weight: 400;  /* Classic book weight for serif */
+}
+
+/* Vintage Typography Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+  margin-bottom: var(--space-md);
+}
+
+h1 {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+h4 {
+  font-size: var(--text-lg);
+  font-weight: 500;
+}
+
+/* Display Typography for Special Elements */
+.display-text {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-atlas-dark);
+}
+
+.atlas-style {
+  font-family: var(--font-atlas-title);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-atlas-red);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Body Text Refinements */
+p {
+  line-height: 1.65;
+  margin-bottom: var(--space-md);
+}
+
+/* Dynamic Vintage Map Background */
+body::before {
+  content: '';
+  position: fixed;
+  top: -20%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  background-size: cover;
+  background-position: center;
+  opacity: var(--map-base-opacity);
+  z-index: -1;
+  animation: vintageMapFlyover var(--flyover-duration) ease-in-out infinite;
+  pointer-events: none;
+  
+  /* Enhanced color visibility while keeping it subtle */
+  filter: var(--map-contrast-filter);
+  transition: opacity 0.6s ease, filter 0.6s ease;
+  
+  /* Background image will be set dynamically by JavaScript */
+}
+
+/* True Flyover Keyframes - Closer, Slower Flight Paths */
+
+/* Route 1: West to East Leisurely Flight */
+@keyframes vintageMapFlyover {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(-35%, -3%);
+    background-position: 5% 47%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(35%, 2%);
+    background-position: 95% 53%;
+  }
+}
+
+/* Route 2: North to South Scenic Journey */  
+@keyframes vintageMapRoute2 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(4%, -30%);
+    background-position: 54% 3%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(-2%, 30%);
+    background-position: 46% 97%;
+  }
+}
+
+/* Route 3: Southwest to Northeast Cruise */
+@keyframes vintageMapRoute3 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(-28%, 22%);
+    background-position: 12% 88%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(28%, -18%);
+    background-position: 88% 12%;
+  }
+}
+
+/* Route 4: Southeast to Northwest Extended */
+@keyframes vintageMapRoute4 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(26%, 24%);
+    background-position: 89% 87%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(-28%, -22%);
+    background-position: 11% 13%;
+  }
+}
+
+/* Route 5: Random Trajectory A - Curved Path */
+@keyframes vintageMapRoute5 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(-20%, -15%);
+    background-position: 25% 30%;
+  }
+  33% {
+    transform: scale(var(--flyover-altitude)) translate(5%, -8%);
+    background-position: 55% 42%;
+  }
+  66% {
+    transform: scale(var(--flyover-altitude)) translate(15%, 12%);
+    background-position: 65% 62%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(32%, 25%);
+    background-position: 82% 75%;
+  }
+}
+
+/* Route 6: Northern Transcontinental - Great Lakes Region */
+@keyframes vintageMapRoute6 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(-35%, -12%);
+    background-position: 5% 38%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(35%, -8%);
+    background-position: 95% 42%;
+  }
+}
+
+/* Route 7: Southern Transcontinental - Gulf Coast */
+@keyframes vintageMapRoute7 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(-33%, 18%);
+    background-position: 7% 68%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(33%, 15%);
+    background-position: 93% 65%;
+  }
+}
+
+/* Route 8: Central Plains Route */
+@keyframes vintageMapRoute8 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(-36%, 3%);
+    background-position: 4% 53%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(36%, -1%);
+    background-position: 96% 49%;
+  }
+}
+
+/* Route 9: East to West Return Journey */
+@keyframes vintageMapRoute9 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(34%, 5%);
+    background-position: 91% 55%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(-34%, 1%);
+    background-position: 9% 51%;
+  }
+}
+
+/* Route 10: Random Curved Trajectory */
+@keyframes vintageMapRoute10 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(-20%, -15%);
+    background-position: 25% 30%;
+  }
+  33% {
+    transform: scale(var(--flyover-altitude)) translate(5%, -8%);
+    background-position: 55% 42%;
+  }
+  66% {
+    transform: scale(var(--flyover-altitude)) translate(15%, 12%);
+    background-position: 65% 62%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(32%, 25%);
+    background-position: 82% 75%;
+  }
+}
+
+/* Route 11: Serpentine Path Exploration */
+@keyframes vintageMapRoute11 {
+  0% {
+    transform: scale(var(--flyover-altitude)) translate(18%, -28%);
+    background-position: 78% 22%;
+  }
+  25% {
+    transform: scale(var(--flyover-altitude)) translate(-8%, -12%);
+    background-position: 42% 38%;
+  }
+  50% {
+    transform: scale(var(--flyover-altitude)) translate(12%, 6%);
+    background-position: 62% 56%;
+  }
+  75% {
+    transform: scale(var(--flyover-altitude)) translate(-15%, 18%);
+    background-position: 35% 68%;
+  }
+  100% {
+    transform: scale(var(--flyover-altitude)) translate(-30%, 30%);
+    background-position: 20% 80%;
+  }
+}
+
+/* Hover Enhancement - Dramatic Color Pop on Interaction */
+body:hover::before {
+  opacity: var(--map-hover-opacity);
+  filter: var(--map-contrast-filter) brightness(115%) saturate(155%);
+  transition: opacity 0.6s ease, filter 0.6s ease;
+}
+
+/* Smooth transition for normal state */
+body::before {
+  transition: opacity 0.6s ease, filter 0.6s ease;
 }
 
 /* App Layout */
@@ -86,24 +420,27 @@ body {
   text-align: center;
 }
 
-.App-header {
-  background: var(--color-surface);
-  border-bottom: 2px solid var(--color-border);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.App-header h1 {
-  font-family: var(--font-heading);
-  font-size: var(--text-3xl);
-  font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: var(--space-sm);
-  letter-spacing: -0.025em;
-}
+  .App-header {
+    background: var(--header-bg);  /* Use selected color scheme */
+    border-bottom: 3px solid var(--color-atlas-dark);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .App-header h1 {
+    font-family: var(--font-atlas-title);
+    font-size: 2.2rem;  /* Authentic 1938 proportions */
+    font-weight: 900;  /* Maximum boldness for impact */
+    color: var(--header-text);  /* Dynamic header text color */
+    margin: 0;
+    letter-spacing: 0.1em;  /* Wide spacing for industrial feel */
+    text-transform: uppercase;
+    font-stretch: extra-condensed;  /* Authentic condensed style */
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);  /* Bold shadow for depth */
+  }
 
 .game-description {
   font-size: var(--text-lg);
@@ -129,99 +466,383 @@ body {
   padding: var(--space-lg);
 }
 
+/* Authentic License Plate Frame with Voronoi Texture */
 .plate-frame {
-  background: var(--color-plate-frame);
-  border: 3px solid var(--color-plate-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
+  /* Basic structure */
   position: relative;
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 2.05 / 1;  /* More authentic plate proportions */
+  min-width: 420px;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-width: 400px;
-  max-width: 500px;
-  margin: 0 auto;
-  box-shadow: var(--shadow-md);
-  transition: all 0.2s ease;
+  
+  /* Enhanced plate surface with dynamic voronoi-like texture */
+  background: 
+    /* Dynamic voronoi-inspired cellular texture (generated per plate) */
+    var(--voronoi-texture, 
+      /* Fallback static pattern if no dynamic texture */
+      radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 95%, white 5%) 0%, transparent 15%),
+      radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 90%, black 10%) 0%, transparent 18%),
+      radial-gradient(circle at 40% 40%, color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 93%, white 7%) 0%, transparent 12%),
+      radial-gradient(circle at 60% 80%, color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 88%, black 12%) 0%, transparent 16%)
+    ),
+    /* Main gradient base */
+    linear-gradient(135deg, 
+      var(--plate-surface-color, var(--color-plate-surface)) 0%, 
+      color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 82%, black 18%) 100%);
+  
+  /* Sharper corners for more defined edges */
+  border-radius: 6px;
+  
+  /* More pronounced ridged border with metallic definition */
+  border: 4px solid color-mix(in srgb, var(--plate-surface-color, var(--color-plate-border)) 85%, black 15%);
+  
+  /* Enhanced floating plate shadow system with pronounced lip details */
+  box-shadow: 
+    /* Dramatic floating shadow */
+    0 12px 30px rgba(0, 0, 0, 0.25),
+    0 6px 16px rgba(0, 0, 0, 0.18),
+    /* Pronounced inner lip with metallic definition */
+    inset 0 0 0 2px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, white 15%),
+    inset 0 0 0 4px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, black 8%),
+    inset 0 0 0 5px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 90%, black 10%),
+    /* Enhanced inset shadows for pronounced ridge effect */
+    inset 0 3px 6px rgba(0, 0, 0, 0.12),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+    /* Strong metallic highlight for defined edge */
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px 0 0 rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  transition: all 0.3s ease;
+  overflow: visible;
 }
 
+/* Enhanced ridge stripes - much more pronounced and defined */
+.plate-frame::before {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 3px;  /* Much thicker ridge */
+  top: 16px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, white 20%) 25%, 
+    color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, black 15%) 50%, 
+    color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, white 20%) 75%, 
+    transparent 100%);
+  border-radius: 1.5px;
+  box-shadow: 
+    /* Sharp defined ridge shadow */
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    /* Inner ridge definition */
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    /* Side definition */
+    inset 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px 0 0 rgba(0, 0, 0, 0.15);
+}
+
+.plate-frame::after {
+  /* Add subtle weathering streaks */
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 3px;  /* Much thicker ridge */
+  bottom: 16px;
+  background-image:
+    /* Horizontal weathering streaks */
+    linear-gradient(0deg, transparent 30%, rgba(0,0,0,0.02) 32%, rgba(0,0,0,0.04) 33%, rgba(0,0,0,0.02) 34%, transparent 36%),
+    linear-gradient(0deg, transparent 45%, rgba(255,255,255,0.03) 47%, rgba(255,255,255,0.05) 48%, rgba(255,255,255,0.03) 49%, transparent 51%),
+    linear-gradient(0deg, transparent 62%, rgba(0,0,0,0.015) 64%, rgba(0,0,0,0.03) 65%, rgba(0,0,0,0.015) 66%, transparent 68%),
+    /* Vertical subtle texture */
+    linear-gradient(90deg, transparent 25%, rgba(0,0,0,0.01) 26%, transparent 27%),
+    linear-gradient(90deg, transparent 55%, rgba(255,255,255,0.02) 56%, transparent 57%),
+    linear-gradient(90deg, transparent 75%, rgba(0,0,0,0.01) 76%, transparent 77%),
+    /* Original ridge background */
+    linear-gradient(90deg, 
+      transparent 0%, 
+      color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, white 20%) 25%, 
+      color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, black 15%) 50%, 
+      color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, white 20%) 75%, 
+      transparent 100%);
+  border-radius: 1.5px;
+  box-shadow: 
+    /* Sharp defined ridge shadow */
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    /* Inner ridge definition */
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    /* Side definition */
+    inset 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px 0 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Subtle round mounting hole divots - authentic but not obvious */
+.plate-frame .mounting-hole {
+  position: absolute;
+  width: 12px;  /* Normal round size */
+  height: 12px; /* Perfect circle */
+  border-radius: 50%;
+  box-shadow: 
+    /* Subtle inset shadow for gentle hole effect */
+    inset 0 0 3px rgba(0, 0, 0, 0.25),
+    inset 0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 -0.5px 1px rgba(255, 255, 255, 0.1),
+    /* Very subtle outer weathering ring */
+    0 0 0 1px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 90%, black 10%);
+  background: color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 88%, black 12%);
+  opacity: 0.6; /* More subtle visibility */
+}
+
+.plate-frame .mounting-hole.top-left {
+  top: 10px;  /* Well above the ridge */
+  left: 15px;
+}
+
+.plate-frame .mounting-hole.top-right {
+  top: 10px;  /* Well above the ridge */
+  right: 15px;
+}
+
+.plate-frame .mounting-hole.bottom-left {
+  bottom: 10px;  /* Well below the ridge */
+  left: 15px;
+}
+
+.plate-frame .mounting-hole.bottom-right {
+  bottom: 10px;  /* Well below the ridge */
+  right: 15px;
+}
+
+/* Enhanced floating hover effect with texture emphasis */
 .plate-frame:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+  box-shadow: 
+    /* Dramatic floating shadow on hover */
+    0 18px 40px rgba(0, 0, 0, 0.3),
+    0 10px 25px rgba(0, 0, 0, 0.22),
+    /* Enhanced pronounced lip with hover lighting */
+    inset 0 0 0 2px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, white 20%),
+    inset 0 0 0 4px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, black 10%),
+    inset 0 0 0 5px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 85%, black 15%),
+    /* Enhanced ridge shadows with more definition */
+    inset 0 4px 8px rgba(0, 0, 0, 0.15),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.1),
+    /* Strong metallic highlights for texture visibility */
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 1px 0 0 rgba(255, 255, 255, 0.25),
+    inset -1px 0 0 rgba(0, 0, 0, 0.12);
+  
+  /* Enhance texture visibility on hover */
+  filter: contrast(1.05) brightness(1.02);
 }
 
+/* Satisfying click animation */
+.plate-frame:active,
+.plate-frame.pressed {
+  transform: translateY(-2px) scale(0.98);
+  transition: all 0.1s ease-out;
+  box-shadow: 
+    /* Reduced shadow on click for "pressed down" feel */
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    /* Enhanced pressed ridge effect */
+    inset 0 0 0 3px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, white 15%),
+    inset 0 0 0 4px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, black 8%),
+    inset 0 4px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Raised/Embossed License Plate Letters - Prominent Display */
 .plate-letters {
   font-family: var(--font-plate);
-  font-size: var(--text-4xl);
+  font-size: 5.2rem;  /* MASSIVE for maximum impact */
   font-weight: 900;
-  color: var(--color-plate-letters);
-  letter-spacing: 0.15em;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  color: color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 25%, black 75%);
+  letter-spacing: 0.12em;  /* More spacing for prominence */
+  
+  /* Sharp raised letter effect - crisp definition */
+  text-shadow: 
+    /* Sharp main shadow for depth */
+    0 2px 0 color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 40%, black 60%),
+    0 3px 2px rgba(0, 0, 0, 0.4),
+    /* Crisp highlight edge */
+    0 1px 0 rgba(255, 255, 255, 0.4),
+    /* Sharp definition outline */
+    1px 0 0 rgba(0, 0, 0, 0.1),
+    -1px 0 0 rgba(0, 0, 0, 0.1);
+  
+  /* Professional typography with maximum sharpness */
+  text-transform: uppercase;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-stretch: condensed;
+  
+  /* Subtle 3D perspective */
+  transform: perspective(200px) rotateX(1deg);
+  
+  /* Ensure proper layering */
+  position: relative;
+  z-index: 10;
+  
+  /* Take up more vertical space */
+  line-height: 0.9;
+  margin: 0.2em 0;
+  
+  /* Maximum sharpness and contrast */
+  image-rendering: crisp-edges;
+  filter: contrast(1.1) brightness(0.95);  /* Sharpen black contrast */
+  backface-visibility: hidden;  /* Improve rendering */
 }
 
+/* Registry Score - Top Right (like "1938") - Below ridge, centered */
 .plate-score {
   position: absolute;
-  top: var(--space-sm);
-  right: var(--space-sm);
-  background: var(--color-success);
-  color: var(--color-text-on-primary);
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: var(--text-sm);
+  top: 28px;
+  right: 30px;
+  font-family: var(--font-plate);
+  font-size: 20px;
+  font-weight: 800;
+  color: color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 45%, black 55%);
+  text-shadow: 
+    0 1px 0 color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 60%, black 40%),
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
+/* Registry ID - Top Left (like "CAL") - Below ridge, centered */
 .plate-id {
   position: absolute;
-  top: var(--space-sm);
-  left: var(--space-sm);
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  background: rgba(255, 255, 255, 0.8);
-  padding: var(--space-xs);
-  border-radius: var(--radius-sm);
+  top: 28px;
+  left: 30px;
+  font-family: var(--font-plate);
+  font-size: 18px;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 45%, black 55%);
+  text-shadow: 
+    0 1px 0 color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 60%, black 40%),
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-/* Word Input */
+.plate-click-hint {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.plate-frame:hover .plate-click-hint {
+  opacity: 1;
+}
+
+/* Plate shake animation for invalid words */
+.shake-plate {
+  animation: shake-plate 0.5s ease-in-out;
+}
+
+@keyframes shake-plate {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-4px); }
+}
+
+/* Floating Score Animation */
+.floating-score {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-plate);
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--color-atlas-teal);
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(34, 139, 127, 0.5);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  letter-spacing: 0.1em;
+}
+
+.floating-score.animate {
+  animation: floatScore 2s ease-out forwards;
+}
+
+@keyframes floatScore {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, -80px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -150px) scale(1);
+  }
+}
+
+/* Modern Word Input - Vintage Styled */
 .word-input-container {
   width: 100%;
   max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   align-items: center;
 }
 
-.input-field {
+/* Input field with inline submit icon */
+.input-field-with-icon {
   width: 100%;
-}
-
-.button-group {
+  position: relative;
   display: flex;
-  justify-content: space-between;
-  width: 120px;
-  gap: var(--space-lg);
+  align-items: center;
 }
 
 .word-input {
   width: 100%;
   padding: var(--space-md);
+  padding-right: 60px;  /* Make room for inline submit icon */
   border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   font-size: var(--text-lg);
-  font-family: var(--font-mono);
-  background: var(--color-surface);
+  font-family: var(--font-mono);  /* Typewriter style for authenticity */
+  background: var(--header-text);  /* Match header text cream color */
   color: var(--color-text);
   transition: all 0.2s ease;
   text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.05em;  /* Slight spacing for typewriter feel */
 }
 
 .word-input:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(27, 79, 114, 0.1);
+  border-color: var(--color-atlas-teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-atlas-teal) 15%, transparent);
 }
 
 .word-input.disabled {
@@ -230,25 +851,58 @@ body {
   cursor: not-allowed;
 }
 
-/* Buttons */
+/* Inline Submit Icon - Modern UX */
+.input-submit-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-atlas-teal);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.input-submit-icon:hover:not(.disabled) {
+  opacity: 1;
+  background: color-mix(in srgb, var(--color-atlas-teal) 10%, transparent);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.input-submit-icon.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Buttons - Vintage Style */
 .input-submit-button,
 .control-button {
-  background: var(--color-primary);
-  color: var(--color-text-on-primary);
+  background: var(--color-atlas-teal);  /* Beautiful teal like atlas covers */
+  color: var(--header-text);  /* Cream text */
   border: none;
   border-radius: var(--radius-md);
   padding: var(--space-md);
+  font-family: var(--font-heading);  /* Serif for elegance */
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  letter-spacing: 0.01em;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);  /* Subtle depth like header */
 }
 
 .input-submit-button:hover:not(.disabled),
 .control-button:hover {
-  background: #153A5C;
+  background: color-mix(in srgb, var(--color-atlas-teal) 85%, black 15%);  /* Darker teal on hover */
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -277,6 +931,54 @@ body {
   font-family: var(--font-mono);
 }
 
+/* Button Group Layout */
+.button-group {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Input Submit Buttons - Compact Icon Buttons */
+.input-submit-button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--color-atlas-teal);
+  color: var(--header-text);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+}
+
+.input-submit-button:hover:not(.disabled) {
+  background: color-mix(in srgb, var(--color-atlas-teal) 85%, black 15%);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.input-submit-button.disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  transform: none;
+  text-shadow: none;
+}
+
+/* New Game Button Variant */
+.input-submit-button.new-game-button {
+  background: var(--color-secondary);
+}
+
+.input-submit-button.new-game-button:hover:not(.disabled) {
+  background: color-mix(in srgb, var(--color-secondary) 85%, black 15%);
+}
+
 /* Game Controls */
 .game-controls {
   display: flex;
@@ -292,23 +994,6 @@ body {
   font-size: var(--text-xl);
 }
 
-/* Button Group Styling */
-.input-submit-button {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* New Game Button in Input Group */
-.input-submit-button.new-game-button {
-  background: var(--color-secondary);
-}
-
-.input-submit-button.new-game-button:hover:not(.disabled) {
-  background: #A03027;
-}
 
 /* Loading Screen */
 .loading-screen {
@@ -422,8 +1107,8 @@ body {
 }
 
 .modal-close-button:hover {
-  background: var(--color-border);
-  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-atlas-teal) 15%, transparent);
+  color: var(--color-atlas-teal);
 }
 
 .modal-body {
@@ -439,6 +1124,19 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+}
+
+.info-section h3 {
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.info-section p {
+  color: var(--color-text);
+  line-height: 1.6;
+  margin: 0 0 var(--space-sm) 0;
 }
 
 .info-item {
@@ -540,6 +1238,99 @@ kbd {
   font-style: italic;
 }
 
+kbd {
+  background: var(--color-border);
+  color: var(--color-text);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 0 var(--color-border);
+}
+
+.example-plate {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: center;
+  margin: var(--space-md) 0;
+  padding: var(--space-sm);
+  background: var(--color-surface-variant);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.example-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+}
+
+.example-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.example-row .word {
+  flex: 1;
+  font-family: var(--font-mono);
+}
+
+.example-row.invalid .word {
+  color: var(--color-text-muted);
+}
+
+.example-row .highlight {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.check, .cross {
+  font-size: var(--text-xs);
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.check {
+  color: var(--color-success);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.cross {
+  color: var(--color-warning);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.control-desc {
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  flex: 1;
+}
+
 /* Header Action Buttons */
 .header-actions {
   display: flex;
@@ -547,30 +1338,31 @@ kbd {
   align-items: center;
 }
 
-.header-actions .info-button {
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-muted);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.header-actions .info-button:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: var(--color-surface-variant);
-}
+  .header-actions .info-button {
+    background: color-mix(in srgb, var(--header-text) 15%, transparent);  /* Translucent button */
+    border: 2px solid color-mix(in srgb, var(--header-text) 30%, transparent);
+    border-radius: var(--radius-sm);
+    color: var(--header-text);  /* Match header text color */
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .header-actions .info-button:hover {
+    background: color-mix(in srgb, var(--header-text) 25%, transparent);
+    border-color: color-mix(in srgb, var(--header-text) 50%, transparent);
+    color: var(--header-text);
+    transform: translateY(-1px);
+  }
 
 .info-button {
   background: none;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
+  border: 2px solid var(--color-atlas-teal);
+  color: var(--color-atlas-teal);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -582,8 +1374,8 @@ kbd {
 }
 
 .info-button:hover {
-  background: var(--color-primary);
-  color: var(--color-text-on-primary);
+  background: var(--color-atlas-teal);
+  color: var(--header-text);
   transform: scale(1.05);
 }
 
@@ -930,52 +1722,101 @@ kbd {
   margin: 0;
 }
 
-/* Collection Modal Styles */
+/* Vintage Plate Collection Registry */ 
 .collection-modal {
-  max-width: 900px;
+  max-width: 1000px;
   width: 95vw;
-  max-height: 85vh;
-  overflow: hidden;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
+  background: var(--header-text); /* Cream paper background */
+  border: 3px solid var(--color-atlas-brown);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px color-mix(in srgb, var(--color-atlas-brown) 30%, transparent);
+}
+
+.collection-modal .modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg);
+}
+
+.collection-modal .modal-header {
+  background: var(--color-atlas-brown);
+  color: var(--header-text);
+  padding: var(--space-lg);
+  border-bottom: 2px solid var(--color-atlas-teal);
+}
+
+.collection-modal .modal-header h2 {
+  font-family: var(--font-vintage);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.05em;
 }
 
 .collection-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--space-md);
   margin-bottom: var(--space-xl);
+  padding: 0 var(--space-md);
 }
 
 .stat-card {
-  background: var(--color-surface-variant);
+  background: color-mix(in srgb, var(--color-atlas-teal) 10%, var(--header-text));
   padding: var(--space-md);
-  border-radius: var(--radius-md);
+  border: 2px solid var(--color-atlas-teal);
+  border-radius: var(--radius-sm);
   text-align: center;
-  border: 2px solid var(--color-border);
+  position: relative;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--color-atlas-brown), var(--color-atlas-teal));
+  border-radius: var(--radius-sm);
+  z-index: -1;
 }
 
 .stat-number {
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  color: var(--color-primary);
+  font-family: var(--font-plate);
+  font-size: var(--text-xl);
+  font-weight: 900;
+  color: var(--color-atlas-brown);
   margin-bottom: var(--space-xs);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .stat-label {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  font-weight: 500;
+  font-family: var(--font-vintage);
+  font-size: var(--text-xs);
+  color: var(--color-atlas-teal);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .collection-controls {
   display: flex;
-  gap: var(--space-xl);
+  gap: var(--space-lg);
   align-items: center;
-  margin-bottom: var(--space-xl);
+  justify-content: center;
+  margin-bottom: var(--space-lg);
   padding: var(--space-md);
-  background: var(--color-surface-variant);
-  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-atlas-brown) 8%, var(--header-text));
+  border-top: 1px solid var(--color-atlas-teal);
+  border-bottom: 1px solid var(--color-atlas-teal);
   flex-wrap: wrap;
 }
 
@@ -984,60 +1825,117 @@ kbd {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  font-family: var(--font-vintage);
   font-size: var(--text-sm);
-  color: var(--color-text-muted);
+  color: var(--color-atlas-brown);
+  font-weight: 600;
 }
 
 .collection-select {
   padding: var(--space-xs) var(--space-sm);
-  border: 2px solid var(--color-border);
+  border: 2px solid var(--color-atlas-teal);
   border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  color: var(--color-text);
+  background: var(--header-text);
+  color: var(--color-atlas-brown);
+  font-family: var(--font-vintage);
   font-size: var(--text-sm);
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.collection-select:focus {
+.collection-select:focus,
+.collection-select:hover {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--color-atlas-brown);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-atlas-teal) 20%, transparent);
 }
 
 .empty-collection {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 300px;
-  color: var(--color-text-muted);
+  min-height: 350px;
+  padding: var(--space-xl);
+  background: color-mix(in srgb, var(--color-atlas-teal) 5%, var(--header-text));
+  border: 2px dashed var(--color-atlas-teal);
+  border-radius: var(--radius-md);
+  margin: var(--space-lg);
 }
 
 .empty-message {
   text-align: center;
-  max-width: 400px;
+  max-width: 450px;
 }
 
 .empty-message svg {
-  color: var(--color-border);
-  margin-bottom: var(--space-md);
+  color: var(--color-atlas-teal);
+  margin-bottom: var(--space-lg);
+  opacity: 0.6;
 }
 
 .empty-message h3 {
-  color: var(--color-text);
-  margin-bottom: var(--space-sm);
+  font-family: var(--font-vintage);
+  color: var(--color-atlas-brown);
+  margin-bottom: var(--space-md);
+  font-size: var(--text-lg);
+  font-weight: 700;
 }
 
 .empty-message p {
+  font-family: var(--font-vintage);
   font-size: var(--text-sm);
-  line-height: 1.5;
+  color: var(--color-atlas-teal);
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 .collected-plates-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-md);
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: var(--space-xs);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  justify-items: center;
+  background: 
+    radial-gradient(circle at 20% 50%, color-mix(in srgb, var(--color-atlas-teal) 3%, transparent) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--color-atlas-brown) 2%, transparent) 0%, transparent 50%),
+    linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--color-atlas-teal) 2%, transparent) 100%);
+  border-top: 1px solid color-mix(in srgb, var(--color-atlas-teal) 20%, transparent);
+  position: relative;
+}
+
+.collected-plates-grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      color-mix(in srgb, var(--color-atlas-teal) 3%, transparent) 1px,
+      transparent 2px,
+      transparent 100px
+    );
+  pointer-events: none;
+}
+
+.collection-plate-wrapper {
+  transform: scale(0.6);
+  transform-origin: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  position: relative;
+  z-index: 1;
+}
+
+.collection-plate-wrapper:hover {
+  transform: scale(0.65);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+  z-index: 2;
 }
 
 .collected-plate-card {
@@ -1048,6 +1946,10 @@ kbd {
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
 }
 
 .collected-plate-card:hover {
@@ -1056,19 +1958,20 @@ kbd {
   border-color: var(--color-primary);
 }
 
-.plate-header {
+.plate-display-container {
+  position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--space-md);
+  align-items: center;
+  justify-content: center;
 }
 
-.collected-plate-card .plate-letters {
-  font-family: var(--font-plate);
-  font-size: var(--text-xl);
-  font-weight: 900;
-  color: var(--color-text);
-  letter-spacing: 0.1em;
+.plate-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  text-align: center;
 }
 
 .plate-rarity {
@@ -1123,8 +2026,8 @@ kbd {
 
 .completion-badge {
   position: absolute;
-  top: var(--space-xs);
-  right: var(--space-xs);
+  top: -8px;
+  right: -8px;
   background: var(--color-success);
   color: var(--color-text-on-primary);
   padding: var(--space-xs) var(--space-sm);
@@ -1134,14 +2037,21 @@ kbd {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
 }
 
 .collection-footer {
   text-align: center;
-  color: var(--color-text-muted);
+  background: var(--color-atlas-brown);
+  color: var(--header-text);
+  font-family: var(--font-vintage);
   font-size: var(--text-sm);
-  padding: var(--space-sm) 0;
-  border-top: 1px solid var(--color-border);
+  font-weight: 500;
+  padding: var(--space-md);
+  border-top: 2px solid var(--color-atlas-teal);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.02em;
 }
 
 /* Responsive Design */
@@ -1186,5 +2096,160 @@ kbd {
 
   .collection-stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Info Modal - Clean & Simple */
+.info-modal {
+  max-width: 500px;
+  width: 90vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--header-text);
+  border: 2px solid var(--color-atlas-brown);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.info-modal .modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg);
+}
+
+.info-modal .modal-header {
+  background: var(--color-atlas-brown);
+  color: var(--header-text);
+  padding: var(--space-lg);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-atlas-teal) 30%, transparent);
+}
+
+.info-modal .modal-header h2 {
+  font-family: var(--font-vintage);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.02em;
+}
+
+/* Info Modal Content */
+.info-modal .info-section {
+  margin-bottom: var(--space-lg);
+}
+
+.info-modal .info-section:has(.control-list) {
+  text-align: center;
+}
+
+.info-modal .info-section h3 {
+  color: var(--color-atlas-brown);
+  font-family: var(--font-vintage);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  letter-spacing: 0.01em;
+}
+
+.info-modal .info-section p {
+  color: var(--color-text);
+  line-height: 1.5;
+  margin-bottom: var(--space-sm);
+}
+
+
+.info-modal .example-list {
+  padding: var(--space-md);
+  margin: var(--space-sm) 0;
+}
+
+.info-modal .example-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.info-modal .example-row.invalid .word {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.info-modal .check {
+  display: none;
+}
+
+.info-modal .cross {
+  display: none;
+}
+
+.info-modal .word {
+  font-family: monospace;
+  font-size: var(--text-sm);
+}
+
+.info-modal .word .highlight {
+  background: var(--color-atlas-teal);
+  color: white;
+  padding: 1px 2px;
+  border-radius: 2px;
+  font-weight: bold;
+}
+
+.info-modal .control-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.info-modal .control-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+}
+
+.info-modal .control-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: color-mix(in srgb, var(--color-atlas-teal) 15%, var(--header-text));
+  border: 1px solid var(--color-atlas-teal);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-sm);
+  font-weight: bold;
+  color: var(--color-atlas-brown);
+  font-family: monospace;
+}
+
+.info-modal .control-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.info-modal .control-text strong {
+  color: var(--color-atlas-brown);
+  font-family: var(--font-vintage);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.info-modal .control-text span {
+  color: var(--color-text);
+  font-size: var(--text-xs);
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .info-modal {
+    width: 95vw;
+    max-height: 90vh;
   }
 }

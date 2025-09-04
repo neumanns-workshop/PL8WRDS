@@ -18,6 +18,9 @@ export const useGame = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [shouldShakePlate, setShouldShakePlate] = useState(false);
+  const [floatingScore, setFloatingScore] = useState<{ points: number; show: boolean }>({ points: 0, show: false });
+  const [isPlatePressed, setIsPlatePressed] = useState(false);
 
   const gameDataService = GameDataService.getInstance();
 
@@ -113,6 +116,9 @@ export const useGame = () => {
       const newFoundWords = [...gameState.foundWords, word];
       const newScore = gameState.score + solution.ensemble_score;
       
+      // Trigger floating score animation
+      setFloatingScore({ points: solution.ensemble_score, show: true });
+      
       const isCompleted = updatedSolutions.filter(s => s.found).length === updatedSolutions.length;
       
       setGameState(prev => ({
@@ -138,16 +144,15 @@ export const useGame = () => {
 
       setError(null);
     } else {
-      // Check if word follows the rules but isn't in our dictionary
-      const isValidFormat = GameDataService.validateWord(word, gameState.currentPlate.letters);
+      // Invalid word: clear input and shake plate
+      setGameState(prev => ({
+        ...prev,
+        currentWord: '',
+      }));
       
-      if (isValidFormat) {
-        setError(`"${word}" follows the rules but isn't in our dictionary`);
-      } else {
-        setError(`"${word}" doesn't contain ${gameState.currentPlate.letters} in order`);
-      }
-      
-      setTimeout(() => setError(null), 3000);
+      // Trigger plate shake animation
+      setShouldShakePlate(true);
+      setTimeout(() => setShouldShakePlate(false), 500); // Reset after animation
     }
   }, [gameState, gameDataService]);
 
@@ -177,6 +182,17 @@ export const useGame = () => {
   const getStarterPlates = useCallback(() => {
     return gameDataService.getStarterPlates(5);
   }, [gameDataService]);
+
+  // Handle floating score animation completion
+  const handleScoreAnimationComplete = useCallback(() => {
+    setFloatingScore({ points: 0, show: false });
+  }, []);
+
+  // Trigger plate press visual effect (for Space key)
+  const triggerPlatePress = useCallback(() => {
+    setIsPlatePressed(true);
+    setTimeout(() => setIsPlatePressed(false), 150); // Match the CSS transition duration
+  }, []);
 
   // Load a specific plate from collection
   const loadCollectedPlate = useCallback((plateId: string) => {
@@ -209,6 +225,9 @@ export const useGame = () => {
     gameState,
     isLoading,
     error,
+    shouldShakePlate,
+    floatingScore,
+    isPlatePressed,
     actions: {
       startNewGame,
       startGameWithPlate,
@@ -218,6 +237,8 @@ export const useGame = () => {
       revealAllSolutions,
       getStarterPlates,
       loadCollectedPlate,
+      handleScoreAnimationComplete,
+      triggerPlatePress,
     },
   };
 };

@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { X, Trophy, Calendar, Target, Filter } from 'lucide-react';
+import { X, Trophy, Filter, Award } from 'lucide-react';
 import StorageService from '../services/storage';
+import PlateDisplay from './PlateDisplay';
+import GameDataService from '../services/gameData';
 
 interface CollectionModalProps {
   isOpen: boolean;
@@ -16,6 +18,8 @@ const CollectionModal: React.FC<CollectionModalProps> = ({
   const [sortBy, setSortBy] = useState<'recent' | 'completion' | 'difficulty' | 'letters'>('recent');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
 
+  const gameDataService = GameDataService.getInstance();
+  
   const collectedPlates = useMemo(() => {
     let plates = StorageService.getCollectedPlates(sortBy);
     
@@ -23,8 +27,12 @@ const CollectionModal: React.FC<CollectionModalProps> = ({
       plates = plates.filter(plate => getDifficultyTier(plate.difficulty) === selectedDifficulty);
     }
     
-    return plates;
-  }, [sortBy, selectedDifficulty]);
+    // Get actual plate objects from game data
+    return plates.map(collectedPlate => {
+      const actualPlate = gameDataService.getPlateById(collectedPlate.plateId);
+      return actualPlate ? { ...actualPlate, collectionData: collectedPlate } : null;
+    }).filter((plate): plate is NonNullable<typeof plate> => plate !== null);
+  }, [sortBy, selectedDifficulty, gameDataService]);
 
   const stats = useMemo(() => StorageService.getCollectionStats(), []);
 
@@ -39,21 +47,13 @@ const CollectionModal: React.FC<CollectionModalProps> = ({
   };
 
   const getDifficultyColor = (difficulty: number): string => {
-    if (difficulty >= 90) return '#dc3545'; // Red - Ultra Hard
-    if (difficulty >= 80) return '#fd7e14'; // Orange - Very Hard
-    if (difficulty >= 60) return '#ffc107'; // Yellow - Hard
-    if (difficulty >= 30) return '#28a745'; // Green - Medium
-    return '#17a2b8'; // Cyan - Easy
+    if (difficulty >= 90) return '#8B2635'; // Dark red - Ultra Hard
+    if (difficulty >= 80) return '#B45309'; // Dark orange - Very Hard  
+    if (difficulty >= 60) return '#CA8A04'; // Dark yellow - Hard
+    if (difficulty >= 30) return '#166534'; // Dark green - Medium
+    return '#0F766E'; // Dark teal - Easy
   };
 
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      year: date.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
-    });
-  };
 
   const handlePlateClick = (plateId: string) => {
     if (onSelectPlate) {
@@ -67,8 +67,8 @@ const CollectionModal: React.FC<CollectionModalProps> = ({
       <div className="modal-content collection-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2><Trophy className="inline-icon" size={24} />Plate Collection</h2>
-          <button className="modal-close" onClick={onClose}>
-            <X size={20} />
+          <button className="modal-close-button" onClick={onClose}>
+            <X size={24} />
           </button>
         </div>
 
@@ -139,52 +139,15 @@ const CollectionModal: React.FC<CollectionModalProps> = ({
           ) : (
             <div className="collected-plates-grid">
               {collectedPlates.map((plate) => (
-                <div 
-                  key={plate.plateId} 
-                  className="collected-plate-card"
-                  onClick={() => handlePlateClick(plate.plateId)}
-                  style={{ borderLeft: `4px solid ${getDifficultyColor(plate.difficulty)}` }}
-                >
-                  <div className="plate-header">
-                    <div className="plate-letters">{plate.letters}</div>
-                    <div className="plate-difficulty" style={{ color: getDifficultyColor(plate.difficulty) }}>
-                      <Target size={12} fill="currentColor" />
-                      {getDifficultyTier(plate.difficulty)}
-                    </div>
-                  </div>
-
-                  <div className="plate-progress">
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-fill" 
-                        style={{ 
-                          width: `${plate.completionPercentage}%`,
-                          backgroundColor: getDifficultyColor(plate.difficulty)
-                        }}
-                      />
-                    </div>
-                    <span className="progress-text">
-                      {plate.foundWords.length}/{plate.solution_count} words ({plate.completionPercentage}%)
-                    </span>
-                  </div>
-
-                  <div className="plate-meta">
-                    <div className="plate-score">
-                      <Target size={12} />
-                      {plate.totalScore.toLocaleString()} pts
-                    </div>
-                    <div className="plate-date">
-                      <Calendar size={12} />
-                      {formatDate(plate.lastPlayedDate)}
-                    </div>
-                  </div>
-
-                  {plate.completionPercentage === 100 && (
-                    <div className="completion-badge">
-                      <Trophy size={14} />
-                      Complete!
-                    </div>
-                  )}
+                <div key={plate.id} className="collection-plate-wrapper">
+                  <PlateDisplay 
+                    plate={plate}
+                    foundWordsCount={plate.collectionData?.foundWords.length || 0}
+                    totalSolutions={plate.solutions.length}
+                    foundWords={plate.collectionData?.foundWords || []}
+                    currentScore={plate.collectionData?.totalScore || 0}
+                    onNewPlate={() => handlePlateClick(plate.id)}
+                  />
                 </div>
               ))}
             </div>

@@ -90,3 +90,9 @@ export function getScoreColor(percentile: number): string {
   return '#6c757d';                       // Gray - Below Average
 }
 
+export function getPlateColor(plate: Plate): string {
+  // Generate plate color based on difficulty
+  const difficultyPercentile = getDifficultyPercentile(plate.solution_count);
+  return getDifficultyColor(difficultyPercentile);
+}
+

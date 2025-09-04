@@ -1,6 +1,6 @@
 // InfoModal component - Shows game rules and information
 import React from 'react';
-import { X, MapPin, Target, Award, Keyboard, Book } from 'lucide-react';
+import { X, MapPin } from 'lucide-react';
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -15,77 +15,78 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose, gameData 
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content info-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2><MapPin size={24} />How to Play PL8WRDS</h2>
+          <h2><MapPin size={24} />How to Play</h2>
           <button className="modal-close-button" onClick={onClose}>
             <X size={24} />
           </button>
         </div>
         
         <div className="modal-body">
+          {/* Gameplay */}
           <div className="info-section">
-            <div className="info-item">
-              <Target className="info-icon" size={20} />
-              <div>
-                <h3>The Goal</h3>
-                <p>Find words that contain the license plate letters <strong>in the exact order shown</strong>.</p>
-                <p className="example">Example: For plate "CAR", words like "sCARe", "CARbon", or "suCCubuS" work!</p>
-              </div>
+            <h3>Gameplay</h3>
+            <p>Find words that use the given letters in order.</p>
+          </div>
+
+          {/* Example */}
+          <div className="info-section">
+            <h3>Example</h3>
+            <div className="plate-frame">
+              <div className="mounting-hole top-left"></div>
+              <div className="mounting-hole top-right"></div>
+              <div className="mounting-hole bottom-left"></div>
+              <div className="mounting-hole bottom-right"></div>
+              <div className="plate-letters">QRI</div>
             </div>
-            
-            <div className="info-item">
-              <Award className="info-icon" size={20} />
-              <div>
-                <h3>Scoring</h3>
-                <p>Earn points based on word rarity and difficulty. Longer, less common words score higher!</p>
+            <div className="example-list">
+              <div className="example-row valid">
+                <span className="check">✓</span>
+                <span className="word">
+                  <span className="highlight">Q</span>UA<span className="highlight">R</span>ANT<span className="highlight">I</span>NE
+                </span>
               </div>
-            </div>
-            
-            <div className="info-item">
-              <Keyboard className="info-icon" size={20} />
-              <div>
-                <h3>Controls</h3>
-                <ul>
-                  <li><kbd>Enter</kbd> - Submit word</li>
-                  <li><kbd>Space</kbd> - New route (new license plate)</li>
-                  <li>Click plate - View registration details</li>
-                </ul>
+              <div className="example-row valid">
+                <span className="check">✓</span>
+                <span className="word">
+                  A<span className="highlight">Q</span>UA<span className="highlight">R</span><span className="highlight">I</span>UM
+                </span>
+              </div>
+              <div className="example-row invalid">
+                <span className="cross">✗</span>
+                <span className="word">
+                  IN<span className="highlight">Q</span>UI<span className="highlight">R</span>Y
+                </span>
+              </div>
+              <div className="example-row valid">
+                <span className="check">✓</span>
+                <span className="word">
+                  IN<span className="highlight">Q</span>UI<span className="highlight">R</span><span className="highlight">I</span>ES
+                </span>
               </div>
             </div>
           </div>
 
-          {gameData && (
-            <div className="info-section">
-              <div className="info-item">
-                <Book className="info-icon" size={20} />
-                <div>
-                  <h3>Game Stats</h3>
-                  <div className="stats-grid">
-                    <div className="stat-item">
-                      <span className="detail-label">Total Plates:</span>
-                      <span className="detail-value">{gameData.metadata.total_plates.toLocaleString()}</span>
-                    </div>
-                    <div className="stat-item">
-                      <span className="detail-label">Unique Words:</span>
-                      <span className="detail-value">{gameData.metadata.unique_words.toLocaleString()}</span>
-                    </div>
-                    <div className="stat-item">
-                      <span className="detail-label">Total Solutions:</span>
-                      <span className="detail-value">{gameData.metadata.total_solutions.toLocaleString()}</span>
-                    </div>
-                  </div>
-                  <p className="data-source">
-                    Word list from WordNet with frequencies from Google N-grams
-                  </p>
+          {/* Controls */}
+          <div className="info-section">
+            <h3>Controls</h3>
+            <ul className="control-list">
+              <li className="control-item">
+                <div className="control-icon">⎵</div>
+                <div className="control-text">
+                  <strong>SPACE</strong>
+                  <span>to get new plate</span>
                 </div>
-              </div>
-            </div>
-          )}
-          
-          <div className="info-footer">
-            <p className="vintage-note">
-              <em>Like the old Rand McNally atlases, each plate tells a story of the open road...</em>
-            </p>
+              </li>
+              <li className="control-item">
+                <div className="control-icon">↵</div>
+                <div className="control-text">
+                  <strong>ENTER</strong>
+                  <span>to submit solution</span>
+                </div>
+              </li>
+            </ul>
           </div>
+
         </div>
       </div>
     </div>

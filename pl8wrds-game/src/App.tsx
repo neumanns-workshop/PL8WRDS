@@ -1,6 +1,7 @@
 // Main App component for PL8WRDS game
 import React, { useEffect, useState } from 'react';
 import './styles/vintage.css';
+import './utils/dynamicMapBackground'; // Initialize the dynamic map background
 import { ThemeProvider } from './theme';
 import { useGame } from './hooks/useGame';
 import PlateDisplay from './components/PlateDisplay';
@@ -9,10 +10,11 @@ import LoadingScreen from './components/LoadingScreen';
 import ErrorMessage from './components/ErrorMessage';
 import InfoModal from './components/InfoModal';
 import CollectionModal from './components/CollectionModal';
+import FloatingScore from './components/FloatingScore';
 import { MapPin, Info, BookOpen } from 'lucide-react';
 
 function App() {
-  const { gameState, isLoading, error, actions } = useGame();
+  const { gameState, isLoading, error, shouldShakePlate, floatingScore, isPlatePressed, actions } = useGame();
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
 
@@ -95,7 +97,9 @@ function App() {
           totalSolutions={totalSolutions}
           foundWords={gameState.foundWords}
           currentScore={gameState.score}
-          gameData={gameState.gameData}
+          onNewPlate={actions.startNewGame}
+          shouldShake={shouldShakePlate}
+          isPressed={isPlatePressed}
         />
         
         <WordInput
@@ -103,15 +107,11 @@ function App() {
           onWordChange={actions.updateCurrentWord}
           onSubmit={actions.submitWord}
           onNewGame={actions.startNewGame}
+          onTriggerPlatePress={actions.triggerPlatePress}
           disabled={gameState.gameStatus !== 'playing'}
           placeholder="Enter a word..."
         />
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
       </main>
 
       {/* Info Modal */}
@@ -126,6 +126,13 @@ function App() {
         isOpen={showCollectionModal}
         onClose={() => setShowCollectionModal(false)}
         onSelectPlate={(plateId) => actions.loadCollectedPlate(plateId)}
+      />
+
+      {/* Floating Score Animation */}
+      <FloatingScore 
+        points={floatingScore.points}
+        isVisible={floatingScore.show}
+        onAnimationComplete={actions.handleScoreAnimationComplete}
       />
 
       </div>

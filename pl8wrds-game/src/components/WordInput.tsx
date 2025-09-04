@@ -1,12 +1,13 @@
 // WordInput component - Handles word input and validation
 import React, { useRef, useEffect } from 'react';
-import { Send, RotateCcw } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 interface WordInputProps {
   currentWord: string;
   onWordChange: (word: string) => void;
   onSubmit: () => void;
   onNewGame: () => void;
+  onTriggerPlatePress?: () => void;
   disabled?: boolean;
   placeholder?: string;
 }
@@ -16,6 +17,7 @@ export const WordInput: React.FC<WordInputProps> = ({
   onWordChange,
   onSubmit,
   onNewGame,
+  onTriggerPlatePress,
   disabled = false,
   placeholder = "Enter a word...",
 }) => {
@@ -31,6 +33,10 @@ export const WordInput: React.FC<WordInputProps> = ({
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && currentWord.trim()) {
       onSubmit();
+    } else if (e.key === ' ') {
+      e.preventDefault(); // Prevent space from being added to input
+      onTriggerPlatePress?.(); // Trigger visual press effect
+      onNewGame();
     }
   };
 
@@ -47,7 +53,7 @@ export const WordInput: React.FC<WordInputProps> = ({
 
   return (
     <div className="word-input-container">
-      <div className="input-field">
+      <div className="input-field-with-icon">
         <input
           ref={inputRef}
           type="text"
@@ -59,19 +65,10 @@ export const WordInput: React.FC<WordInputProps> = ({
           className={`word-input ${disabled ? 'disabled' : ''}`}
           maxLength={20} // Reasonable max length for words
         />
-      </div>
-      <div className="button-group">
-        <button
-          onClick={onNewGame}
-          className="input-submit-button new-game-button"
-          title="New Game (Spacebar)"
-        >
-          <RotateCcw size={16} />
-        </button>
         <button
           onClick={onSubmit}
           disabled={!canSubmit}
-          className={`input-submit-button ${!canSubmit ? 'disabled' : ''}`}
+          className={`input-submit-icon ${!canSubmit ? 'disabled' : ''}`}
           title="Submit Word (Enter)"
         >
           <Send size={16} />
