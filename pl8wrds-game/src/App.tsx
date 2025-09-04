@@ -1,9 +1,9 @@
 // Main App component for PL8WRDS game
-import React, { useEffect, useState } from 'react';
-import './styles/vintage.css';
+import { useEffect, useState } from 'react';
+import './styles/index.css';
 import './utils/dynamicMapBackground'; // Initialize the dynamic map background
 import { ThemeProvider } from './theme';
-import { useGame } from './hooks/useGame';
+import { useGameCore } from './hooks/useGameCore';
 import PlateDisplay from './components/PlateDisplay';
 import WordInput from './components/WordInput';
 import LoadingScreen from './components/LoadingScreen';
@@ -14,7 +14,7 @@ import FloatingScore from './components/FloatingScore';
 import { MapPin, Info, BookOpen } from 'lucide-react';
 
 function App() {
-  const { gameState, isLoading, error, shouldShakePlate, floatingScore, isPlatePressed, actions } = useGame();
+  const { gameState, isLoading, error, shouldShakePlate, floatingScore, isPlatePressed, actions } = useGameCore();
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
 
@@ -46,6 +46,9 @@ function App() {
           if (gameState.currentWord.trim() && gameState.gameStatus === 'playing') {
             actions.submitWord();
           }
+          break;
+        default:
+          // No action needed for other keys
           break;
       }
     };

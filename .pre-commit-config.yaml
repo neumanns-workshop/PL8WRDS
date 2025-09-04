@@ -1,0 +1,143 @@
+# Pre-commit configuration for PL8WRDS
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  # Built-in hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: mixed-line-ending
+      - id: name-tests-test
+        args: ['--django']
+      - id: requirements-txt-fixer
+      - id: sort-simple-yaml
+
+  # Python code formatting
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+        language_version: python3.11
+        args: [--line-length=100]
+
+  # Python import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: [--profile=black, --line-length=100]
+
+  # Python linting and formatting with Ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.287
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  # Type checking with MyPy
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1
+    hooks:
+      - id: mypy
+        additional_dependencies: 
+          - types-requests
+          - types-redis
+          - types-setuptools
+        args: [--strict, --ignore-missing-imports]
+
+  # Security checks with Bandit
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [-c, pyproject.toml]
+        additional_dependencies: ["bandit[toml]"]
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        args: [--ignore, DL3008, --ignore, DL3009]
+
+  # YAML formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.3
+    hooks:
+      - id: prettier
+        types: [yaml, markdown]
+        exclude: ^(docs/|\.github/)
+
+  # Shell script linting
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.9.0
+    hooks:
+      - id: shellcheck
+
+  # Commit message formatting
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: 3.7.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  # Additional security and quality checks
+  - repo: local
+    hooks:
+      - id: safety
+        name: safety
+        entry: safety
+        language: system
+        args: [scan, --short-report]
+        types: [python]
+        require_serial: true
+
+      - id: pytest
+        name: pytest
+        entry: pytest
+        language: system
+        args: [--maxfail=1, --tb=short, -v]
+        types: [python]
+        pass_filenames: false
+        stages: [pre-push]
+
+# Global configuration
+default_language_version:
+  python: python3.11
+
+exclude: |
+  (?x)^(
+      \.git/|
+      \.pytest_cache/|
+      __pycache__/|
+      \.mypy_cache/|
+      \.ruff_cache/|
+      \.coverage|
+      htmlcov/|
+      build/|
+      dist/|
+      \.env|
+      \.venv/|
+      venv/|
+      env/|
+      node_modules/|
+      data/|
+      cache/|
+      models/|
+      logs/|
+      \.log$
+  )

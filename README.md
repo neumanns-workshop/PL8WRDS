@@ -158,4 +158,13 @@ This is a **production-ready word game** with real mathematical scoring, optimiz
 
 ---
 
+## 📖 Documentation
+
+- **[🚀 Setup Guide](docs/SETUP.md)** - Get running locally or deploy to Netlify
+- **[🔧 API Reference](docs/API.md)** - Optional API for scoring customization  
+- **[🤝 Contributing](docs/CONTRIBUTING.md)** - How to contribute
+- **[🔍 Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and fixes
+
+---
+
 *Built with real ensemble scoring, mathematical rigor, and performance optimization* ⚡️

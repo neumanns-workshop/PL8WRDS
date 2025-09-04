@@ -9,7 +9,7 @@ interface GameControlsProps {
 }
 
 export const GameControls: React.FC<GameControlsProps> = ({
-  gameStatus,
+  gameStatus: _gameStatus,
   onNewGame,
   className = "",
 }) => {

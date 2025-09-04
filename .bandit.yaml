@@ -1,0 +1,29 @@
+# Bandit security configuration
+# https://bandit.readthedocs.io/en/latest/config.html
+
+# Tests to skip (by test ID)
+skips: 
+  - B101  # Skip assert_used test for development code
+  - B601  # Skip paramiko_calls test as we don't use paramiko
+
+# Tests to run (if not specified, all tests are run except those in skips)
+tests: []
+
+# Exclude paths
+exclude_dirs:
+  - /tests
+  - /venv
+  - /env
+  - /.venv
+  - /node_modules
+  - __pycache__
+  - .git
+  - build
+  - dist
+  - .pytest_cache
+
+# Include specific confidence levels
+confidence: medium
+
+# Severity level
+severity: medium

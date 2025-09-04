@@ -1,0 +1,345 @@
+/* License plate component system - vintage highway style */
+
+/* License Plate - Vintage Highway Style */
+.plate-display {
+  padding: var(--space-lg);
+}
+
+/* Authentic License Plate Frame with Voronoi Texture */
+.plate-frame {
+  /* Basic structure */
+  position: relative;
+  aspect-ratio: 2.05 / 1;  /* More authentic plate proportions */
+  min-width: 420px;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  /* Enhanced plate surface with dynamic voronoi-like texture */
+  background: 
+    /* Dynamic voronoi-inspired cellular texture (generated per plate) */
+    var(--voronoi-texture, 
+      /* Fallback static pattern if no dynamic texture */
+      radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 95%, white 5%) 0%, transparent 15%),
+      radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 90%, black 10%) 0%, transparent 18%),
+      radial-gradient(circle at 40% 40%, color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 93%, white 7%) 0%, transparent 12%),
+      radial-gradient(circle at 60% 80%, color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 88%, black 12%) 0%, transparent 16%)
+    ),
+    /* Main gradient base */
+    linear-gradient(135deg, 
+      var(--plate-surface-color, var(--color-plate-surface)) 0%, 
+      color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 82%, black 18%) 100%);
+  
+  /* Sharper corners for more defined edges */
+  border-radius: 6px;
+  
+  /* More pronounced ridged border with metallic definition */
+  border: 4px solid color-mix(in srgb, var(--plate-surface-color, var(--color-plate-border)) 85%, black 15%);
+  
+  /* Enhanced floating plate shadow system with pronounced lip details */
+  box-shadow: 
+    /* Dramatic floating shadow */
+    0 12px 30px rgba(0, 0, 0, 0.25),
+    0 6px 16px rgba(0, 0, 0, 0.18),
+    /* Pronounced inner lip with metallic definition */
+    inset 0 0 0 2px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, white 15%),
+    inset 0 0 0 4px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, black 8%),
+    inset 0 0 0 5px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 90%, black 10%),
+    /* Enhanced inset shadows for pronounced ridge effect */
+    inset 0 3px 6px rgba(0, 0, 0, 0.12),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+    /* Strong metallic highlight for defined edge */
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px 0 0 rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  transition: all 0.3s ease;
+  overflow: visible;
+}
+
+/* Enhanced ridge stripes - much more pronounced and defined */
+.plate-frame::before {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 3px;  /* Much thicker ridge */
+  top: 16px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, white 20%) 25%, 
+    color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, black 15%) 50%, 
+    color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, white 20%) 75%, 
+    transparent 100%);
+  border-radius: 1.5px;
+  box-shadow: 
+    /* Sharp defined ridge shadow */
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    /* Inner ridge definition */
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    /* Side definition */
+    inset 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px 0 0 rgba(0, 0, 0, 0.15);
+}
+
+.plate-frame::after {
+  /* Add subtle weathering streaks */
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 3px;  /* Much thicker ridge */
+  bottom: 16px;
+  background-image:
+    /* Horizontal weathering streaks */
+    linear-gradient(0deg, transparent 30%, rgba(0,0,0,0.02) 32%, rgba(0,0,0,0.04) 33%, rgba(0,0,0,0.02) 34%, transparent 36%),
+    linear-gradient(0deg, transparent 45%, rgba(255,255,255,0.03) 47%, rgba(255,255,255,0.05) 48%, rgba(255,255,255,0.03) 49%, transparent 51%),
+    linear-gradient(0deg, transparent 62%, rgba(0,0,0,0.015) 64%, rgba(0,0,0,0.03) 65%, rgba(0,0,0,0.015) 66%, transparent 68%),
+    /* Vertical subtle texture */
+    linear-gradient(90deg, transparent 25%, rgba(0,0,0,0.01) 26%, transparent 27%),
+    linear-gradient(90deg, transparent 55%, rgba(255,255,255,0.02) 56%, transparent 57%),
+    linear-gradient(90deg, transparent 75%, rgba(0,0,0,0.01) 76%, transparent 77%),
+    /* Original ridge background */
+    linear-gradient(90deg, 
+      transparent 0%, 
+      color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, white 20%) 25%, 
+      color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, black 15%) 50%, 
+      color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 100%, white 20%) 75%, 
+      transparent 100%);
+  border-radius: 1.5px;
+  box-shadow: 
+    /* Sharp defined ridge shadow */
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    /* Inner ridge definition */
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    /* Side definition */
+    inset 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px 0 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Subtle round mounting hole divots - authentic but not obvious */
+.plate-frame .mounting-hole {
+  position: absolute;
+  width: 12px;  /* Normal round size */
+  height: 12px; /* Perfect circle */
+  border-radius: 50%;
+  box-shadow: 
+    /* Subtle inset shadow for gentle hole effect */
+    inset 0 0 3px rgba(0, 0, 0, 0.25),
+    inset 0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 -0.5px 1px rgba(255, 255, 255, 0.1),
+    /* Very subtle outer weathering ring */
+    0 0 0 1px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 90%, black 10%);
+  background: color-mix(in srgb, var(--plate-surface-color, var(--color-plate-surface)) 88%, black 12%);
+  opacity: 0.6; /* More subtle visibility */
+}
+
+.plate-frame .mounting-hole.top-left {
+  top: 10px;  /* Well above the ridge */
+  left: 15px;
+}
+
+.plate-frame .mounting-hole.top-right {
+  top: 10px;  /* Well above the ridge */
+  right: 15px;
+}
+
+.plate-frame .mounting-hole.bottom-left {
+  bottom: 10px;  /* Well below the ridge */
+  left: 15px;
+}
+
+.plate-frame .mounting-hole.bottom-right {
+  bottom: 10px;  /* Well below the ridge */
+  right: 15px;
+}
+
+/* Enhanced floating hover effect with texture emphasis */
+.plate-frame:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    /* Dramatic floating shadow on hover */
+    0 18px 40px rgba(0, 0, 0, 0.3),
+    0 10px 25px rgba(0, 0, 0, 0.22),
+    /* Enhanced pronounced lip with hover lighting */
+    inset 0 0 0 2px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, white 20%),
+    inset 0 0 0 4px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, black 10%),
+    inset 0 0 0 5px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 85%, black 15%),
+    /* Enhanced ridge shadows with more definition */
+    inset 0 4px 8px rgba(0, 0, 0, 0.15),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.1),
+    /* Strong metallic highlights for texture visibility */
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 1px 0 0 rgba(255, 255, 255, 0.25),
+    inset -1px 0 0 rgba(0, 0, 0, 0.12);
+  
+  /* Enhance texture visibility on hover */
+  filter: contrast(1.05) brightness(1.02);
+}
+
+/* Satisfying click animation */
+.plate-frame:active,
+.plate-frame.pressed {
+  transform: translateY(-2px) scale(0.98);
+  transition: all 0.1s ease-out;
+  box-shadow: 
+    /* Reduced shadow on click for "pressed down" feel */
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    /* Enhanced pressed ridge effect */
+    inset 0 0 0 3px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, white 15%),
+    inset 0 0 0 4px color-mix(in srgb, var(--plate-surface-color, var(--color-plate-lip)) 100%, black 8%),
+    inset 0 4px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Raised/Embossed License Plate Letters - Prominent Display */
+.plate-letters {
+  font-family: var(--font-plate);
+  font-size: 5.2rem;  /* MASSIVE for maximum impact */
+  font-weight: 900;
+  color: color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 25%, black 75%);
+  letter-spacing: 0.12em;  /* More spacing for prominence */
+  
+  /* Sharp raised letter effect - crisp definition */
+  text-shadow: 
+    /* Sharp main shadow for depth */
+    0 2px 0 color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 40%, black 60%),
+    0 3px 2px rgba(0, 0, 0, 0.4),
+    /* Crisp highlight edge */
+    0 1px 0 rgba(255, 255, 255, 0.4),
+    /* Sharp definition outline */
+    1px 0 0 rgba(0, 0, 0, 0.1),
+    -1px 0 0 rgba(0, 0, 0, 0.1);
+  
+  /* Professional typography with maximum sharpness */
+  text-transform: uppercase;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-stretch: condensed;
+  
+  /* Subtle 3D perspective */
+  transform: perspective(200px) rotateX(1deg);
+  
+  /* Ensure proper layering */
+  position: relative;
+  z-index: 10;
+  
+  /* Take up more vertical space */
+  line-height: 0.9;
+  margin: 0.2em 0;
+  
+  /* Maximum sharpness and contrast */
+  image-rendering: crisp-edges;
+  filter: contrast(1.1) brightness(0.95);  /* Sharpen black contrast */
+  backface-visibility: hidden;  /* Improve rendering */
+}
+
+/* Registry Score - Top Right (like "1938") - Below ridge, centered */
+.plate-score {
+  position: absolute;
+  top: 28px;
+  right: 30px;
+  font-family: var(--font-plate);
+  font-size: 20px;
+  font-weight: 800;
+  color: color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 45%, black 55%);
+  text-shadow: 
+    0 1px 0 color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 60%, black 40%),
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Registry ID - Top Left (like "CAL") - Below ridge, centered */
+.plate-id {
+  position: absolute;
+  top: 28px;
+  left: 30px;
+  font-family: var(--font-plate);
+  font-size: 18px;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 45%, black 55%);
+  text-shadow: 
+    0 1px 0 color-mix(in srgb, var(--plate-surface-color, var(--color-plate-letters)) 60%, black 40%),
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.plate-click-hint {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.plate-frame:hover .plate-click-hint {
+  opacity: 1;
+}
+
+/* Plate shake animation for invalid words */
+.shake-plate {
+  animation: shake-plate 0.5s ease-in-out;
+}
+
+@keyframes shake-plate {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-4px); }
+}
+
+/* Floating Score Animation */
+.floating-score {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-plate);
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--color-atlas-teal);
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(34, 139, 127, 0.5);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  letter-spacing: 0.1em;
+}
+
+.floating-score.animate {
+  animation: floatScore 2s ease-out forwards;
+}
+
+@keyframes floatScore {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, -80px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -150px) scale(1);
+  }
+}

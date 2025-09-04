@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { X, Trophy, Filter, Award } from 'lucide-react';
-import StorageService from '../services/storage';
+import { X, Trophy, Filter } from 'lucide-react';
+import { 
+  CollectionAnalyticsService,
+  SortOption
+} from '../services/storage';
 import PlateDisplay from './PlateDisplay';
 import GameDataService from '../services/gameData';
 
@@ -15,16 +18,16 @@ const CollectionModal: React.FC<CollectionModalProps> = ({
   onClose,
   onSelectPlate
 }) => {
-  const [sortBy, setSortBy] = useState<'recent' | 'completion' | 'difficulty' | 'letters'>('recent');
+  const [sortBy, setSortBy] = useState<SortOption>('recent');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
 
   const gameDataService = GameDataService.getInstance();
   
   const collectedPlates = useMemo(() => {
-    let plates = StorageService.getCollectedPlates(sortBy);
+    let plates = CollectionAnalyticsService.getCollectedPlates(sortBy);
     
     if (selectedDifficulty !== 'all') {
-      plates = plates.filter(plate => getDifficultyTier(plate.difficulty) === selectedDifficulty);
+      plates = CollectionAnalyticsService.filterByDifficulty(plates, selectedDifficulty);
     }
     
     // Get actual plate objects from game data
@@ -34,25 +37,10 @@ const CollectionModal: React.FC<CollectionModalProps> = ({
     }).filter((plate): plate is NonNullable<typeof plate> => plate !== null);
   }, [sortBy, selectedDifficulty, gameDataService]);
 
-  const stats = useMemo(() => StorageService.getCollectionStats(), []);
+  const stats = useMemo(() => CollectionAnalyticsService.getCollectionStats(), []);
 
   if (!isOpen) return null;
 
-  const getDifficultyTier = (difficulty: number): string => {
-    if (difficulty >= 90) return 'Ultra Hard';
-    if (difficulty >= 80) return 'Very Hard';
-    if (difficulty >= 60) return 'Hard';
-    if (difficulty >= 30) return 'Medium';
-    return 'Easy';
-  };
-
-  const getDifficultyColor = (difficulty: number): string => {
-    if (difficulty >= 90) return '#8B2635'; // Dark red - Ultra Hard
-    if (difficulty >= 80) return '#B45309'; // Dark orange - Very Hard  
-    if (difficulty >= 60) return '#CA8A04'; // Dark yellow - Hard
-    if (difficulty >= 30) return '#166534'; // Dark green - Medium
-    return '#0F766E'; // Dark teal - Easy
-  };
 
 
   const handlePlateClick = (plateId: string) => {

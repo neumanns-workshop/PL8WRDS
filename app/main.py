@@ -1,31 +1,42 @@
+"""
+PL8WRDS FastAPI Application Main Module.
+
+This module sets up the FastAPI application with comprehensive monitoring,
+error handling, and dependency injection.
+"""
+
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from typing import Any, Dict
 
-from .core.container import create_container
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from .core.config import get_settings
-from .routers import (
-    solver,
-    scoring,
-    dataset,
-    corpus,
-    combinations,
-    dictionary,
-    prediction,
-    metrics,
-    monitoring
-)
+from .core.container import create_container
+from .core.error_handlers import setup_error_handlers
 from .monitoring import (
+    CriticalErrorHandler,
+    MetricsMiddleware,
+    ObservabilityMiddleware,
+    PerformanceMiddleware,
+    RateLimitingMiddleware,
+    SecurityMiddleware,
+    get_metrics_manager,
+    instrument_fastapi_app,
     setup_logging,
     setup_tracing,
-    instrument_fastapi_app,
-    ObservabilityMiddleware,
-    MetricsMiddleware,
-    PerformanceMiddleware,
-    SecurityMiddleware,
-    RateLimitingMiddleware,
-    get_metrics_manager,
-    CriticalErrorHandler
+)
+from .routers import (
+    combinations,
+    corpus,
+    dataset,
+    dictionary,
+    metrics,
+    monitoring,
+    prediction,
+    scoring,
+    solver,
 )
 
 # Initialize structured logging before anything else
@@ -89,11 +100,26 @@ app = FastAPI(
     title=settings.app.app_name,
     description=settings.app.app_description,
     version=settings.app.app_version,
-    lifespan=lifespan
+    lifespan=lifespan,
+    docs_url="/docs" if settings.is_development else None,
+    redoc_url="/redoc" if settings.is_development else None,
+    openapi_url="/openapi.json" if settings.is_development else None,
 )
 
 # Set container for the FastAPI app
 app.container = container
+
+# Setup error handlers
+setup_error_handlers(app)
+
+# Setup CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"] if settings.is_development else ["https://pl8wrds.com"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 # Setup tracing for FastAPI
 instrument_fastapi_app(app)
@@ -127,21 +153,40 @@ app.include_router(prediction.router)
 
 
 @app.get("/", include_in_schema=False)
-async def read_root():
-    """Root endpoint with API information."""
-    return {
+async def read_root() -> Dict[str, Any]:
+    """Root endpoint with API information.
+    
+    Returns:
+        API information including version and available endpoints.
+    """
+    response = {
         "message": "Welcome to PL8WRDS API",
         "version": settings.app.app_version,
-        "docs": "/docs",
-        "redoc": "/redoc"
+        "status": "running",
+        "environment": "development" if settings.is_development else "production",
     }
+    
+    if settings.is_development:
+        response.update({
+            "docs": "/docs",
+            "redoc": "/redoc",
+            "openapi": "/openapi.json",
+        })
+    
+    return response
 
 
 @app.get("/health", include_in_schema=False)
-async def health_check():
-    """Health check endpoint."""
+async def health_check() -> Dict[str, Any]:
+    """Health check endpoint for load balancers and monitoring.
+    
+    Returns:
+        Health status information.
+    """
     return {
         "status": "healthy",
         "version": settings.app.app_version,
-        "environment": "development" if settings.is_development else "production"
+        "environment": "development" if settings.is_development else "production",
+        "timestamp": None,  # Will be added by middleware
+        "uptime": None,     # Will be added by health monitoring
     }

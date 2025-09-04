@@ -1,12 +1,15 @@
-# PL8WRDS .gitignore
-
 # ================================
-# PYTHON
+# PYTHON SPECIFIC
 # ================================
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# C extensions
 *.so
+
+# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -38,6 +41,7 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+.nox/
 .coverage
 .coverage.*
 .cache
@@ -47,8 +51,17 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
-.coverage_html/
 test-reports/
+
+# Virtual environments
+.env
+.env.*
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -66,33 +79,9 @@ Pipfile.lock
 # PEP 582
 __pypackages__/
 
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.env.local
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
+# ================================
+# DEVELOPMENT TOOLS
+# ================================
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -101,66 +90,24 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# ================================
-# APPLICATION SPECIFIC
-# ================================
+# Ruff
+.ruff_cache/
 
-# Cache files
-cache/
-*.cache
+# Black
+.black_cache/
 
-# Data files (large) - files over 50MB
-data/*.json
-data/*.csv
-data/*.txt
-!data/words_with_freqs.json  # Keep if small (5MB)
-data/corpus_sources/pl8wrds_en_full.json  # 54MB
-client_game_data/pregenerated_solutions.json  # 416MB
-client_game_data/*.gz  # Compressed game data files
-
-# Model files
-models/
-models/*.json  # Large ML model files (625MB+)
-*.joblib
-*.pkl
-*.model
-
-# Logs
-logs/
-*.log
-*.log.*
-
-# Temporary files
-temp/
-tmp/
-*.tmp
-*.temp
-
-# Configuration overrides
-config/local.py
-settings/local.py
+# pre-commit
+.pre-commit-config.local.yaml
 
 # ================================
-# DOCKER
+# EDITORS & IDEs
 # ================================
-.dockerignore
-
-# ================================
-# IDE / EDITORS
-# ================================
-
-# VSCode
+# Visual Studio Code
 .vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+*.code-workspace
 
 # PyCharm
 .idea/
-*.iws
-*.iml
-*.ipr
 
 # Sublime Text
 *.sublime-project
@@ -182,9 +129,8 @@ tramp
 .\#*
 
 # ================================
-# OS
+# OS SPECIFIC
 # ================================
-
 # macOS
 .DS_Store
 .AppleDouble
@@ -206,11 +152,16 @@ Temporary Items
 
 # Windows
 Thumbs.db
+Thumbs.db:encryptable
 ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
 Desktop.ini
 $RECYCLE.BIN/
 *.cab
 *.msi
+*.msix
 *.msm
 *.msp
 *.lnk
@@ -223,175 +174,125 @@ $RECYCLE.BIN/
 .nfs*
 
 # ================================
-# DATABASE
+# APPLICATION SPECIFIC
 # ================================
+# Data directories
+data/
+!data/.gitkeep
+cache/
+!cache/.gitkeep
+models/
+!models/.gitkeep
+logs/
+!logs/.gitkeep
+
+# Generated files
 *.db
 *.sqlite
 *.sqlite3
-db.sqlite3
-database.db
+*.json.gz
+*.pkl
+*.joblib
 
-# PostgreSQL
-*.dump
-*.sql
+# Configuration files with secrets
+.env.local
+.env.production
+secrets.yaml
+config.local.yaml
 
-# ================================
-# SECURITY
-# ================================
-# SSL certificates
-*.pem
-*.key
-*.crt
-*.csr
-ssl/
-certs/
-
-# Secret files
-secrets/
-.secrets
-secret.json
-credentials.json
-
-# API keys
-.apikey
-.secret
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
 
 # ================================
-# CI/CD & DEPLOYMENT
+# DOCKER
 # ================================
-
-# GitHub Actions artifacts
-.github/workflows/*.log
-
-# Kubernetes
-kubeconfig
-*.kubeconfig
-
-# Terraform
-*.tfstate
-*.tfstate.*
-.terraform/
-.terraform.lock.hcl
-
-# Ansible
-*.retry
-.vault_pass
-
-# Helm charts
-charts/
-*.tgz
+# Docker volumes
+docker-data/
 
 # ================================
-# MONITORING & PROFILING
+# MONITORING & OBSERVABILITY
 # ================================
+# Prometheus data
+prometheus-data/
 
-# Performance profiles
-*.prof
-*.pprof
-profile.svg
+# Grafana data
+grafana-data/
 
-# Memory dumps
-*.hprof
-heapdump.*
-
-# Benchmarks
-benchmark-results/
-performance-results/
+# Log files
+*.log
+*.log.*
 
 # ================================
-# TESTING
+# FRONTEND (if React app is in same repo)
 # ================================
-
-# Test artifacts
-test_output/
-test_results/
-.pytest_tmp/
-
-# Load testing
-locust-results/
-load-test-reports/
-
-# ================================
-# DOCUMENTATION
-# ================================
-
-# Generated documentation
-docs/_build/
-docs/build/
-site/
-
-# ================================
-# BACKUP FILES
-# ================================
-*.bak
-*.backup
-*.orig
-*.save
-
-# ================================
-# DEPENDENCY MANAGEMENT
-# ================================
-
-# pip-tools
-requirements*.txt.lock
-
-# Poetry
-poetry.lock
-
-# Conda
-environment.yml.lock
-
-# ================================
-# NODE.JS & REACT
-# ================================
+# Dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.npm
-.yarn-integrity
 
-# React build files
+# Production builds
 pl8wrds-game/build/
+pl8wrds-game/dist/
 
-# Allow optimized web app data files
-!pl8wrds-game/public/pl8wrds_complete.json.gz
-!pl8wrds-game/public/words/dictionary.json
-!pl8wrds-game/public/manifest.json
-!pl8wrds-game/package.json
-!pl8wrds-game/package-lock.json
+# Environment variables
+pl8wrds-game/.env.local
+pl8wrds-game/.env.development.local
+pl8wrds-game/.env.test.local
+pl8wrds-game/.env.production.local
 
 # ================================
-# MISCELLANEOUS
+# SECURITY & SECRETS
 # ================================
+# API keys and secrets
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+secrets/
+.secrets
+api-keys.txt
+credentials.json
 
-# Archives
-*.7z
-*.dmg
-*.gz
-!pl8wrds-game/public/*.gz  # Allow web app data files
-*.iso
-*.jar
-*.rar
-*.tar
+# SSL certificates
+ssl/
+certs/
+
+# ================================
+# BACKUP & ARCHIVE FILES
+# ================================
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*.tar.gz
 *.zip
+*.7z
 
-# Compiled source
-*.class
-*.dll
-*.exe
-*.o
-*.so
+# ================================
+# CUSTOM PROJECT EXCLUSIONS
+# ================================
+# Old experimental files
+old/
+archive/
+experiments/
+sandbox/
 
-# Packages
-*.deb
-*.rpm
+# Large datasets (should be downloaded separately)
+large_datasets/
+corpus_data/
+ml_models/
 
-# Local configuration
-local_settings.py
-local_config.py
+# Client game data (generated, not source controlled)
+client_game_data/*.json.gz
+optimized_game_data/
 
-# Development notes
-NOTES.md
-TODO.md
-SCRATCH.md
+# Documentation builds
+docs/_build/
+docs/build/
+site/

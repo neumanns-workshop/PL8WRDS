@@ -25,6 +25,8 @@ export const FloatingScore: React.FC<FloatingScoreProps> = ({
 
       return () => clearTimeout(timer);
     }
+    // Return empty cleanup function when not visible
+    return () => {};
   }, [isVisible, onAnimationComplete]);
 
   if (!shouldRender || points <= 0) return null;

@@ -8,7 +8,7 @@ interface InfoModalProps {
   gameData?: any;
 }
 
-export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose, gameData }) => {
+export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose, gameData: _gameData }) => {
   if (!isOpen) return null;
 
   return (

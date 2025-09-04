@@ -1,0 +1,141 @@
+/* Vintage Rand McNally Theme Variables */
+/* Inspired by classic highway atlases */
+
+/* CSS Custom Properties - Theme Variables */
+:root {
+  /* Authentic Rand McNally Atlas Colors */
+  --color-background: hsl(45, 30%, 90%);    /* Warm atlas paper */
+  --color-surface: hsl(45, 35%, 88%);       /* Warm atlas header surface */
+  --color-surface-variant: hsl(45, 20%, 92%);
+  
+  --color-primary: hsl(210, 70%, 45%);      /* Rich atlas blue */
+  --color-secondary: hsl(355, 80%, 50%);    /* Bold Rand McNally red */ 
+  --color-accent: hsl(140, 50%, 40%);       /* Highway route green */
+  
+  --color-text: hsl(0, 0%, 15%);            /* Deep black text */
+  --color-text-muted: hsl(210, 20%, 45%);
+  --color-text-on-primary: hsl(45, 25%, 95%);
+  
+  --color-success: hsl(35, 60%, 50%);       /* Warm success */
+  --color-warning: hsl(5, 70%, 55%);        /* Alert red */
+  --color-border: hsl(210, 25%, 65%);
+
+  /* Matte Vintage License Plate Colors - Understated */
+  --color-plate-surface: hsl(45, 35%, 55%);      /* Subdued golden base */
+  --color-plate-aged: hsl(42, 30%, 50%);         /* Matte weathered tone */
+  --color-plate-letters: hsl(25, 35%, 15%);      /* Rich dark brown */
+  --color-plate-border: hsl(42, 25%, 45%);       /* Muted border */
+  --color-plate-ridge: hsl(45, 20%, 65%);        /* Subtle matte ridge */
+  --color-plate-shadow: hsl(40, 25%, 40%);       /* Soft shadow recesses */
+  --color-plate-lip: hsl(44, 20%, 50%);          /* Very subtle lip */
+  --color-plate-patina: hsl(20, 30%, 40%);       /* Understated aging */
+
+  /* Kodachrome Paper Textures - Desaturated Vintage */
+  --color-paper-cream: hsl(45, 25%, 92%);
+  --color-paper-aged: hsl(42, 20%, 87%);
+  --color-paper-worn: hsl(38, 18%, 82%);
+
+  /* Authentic Rand McNally Atlas Colors - Based on Vintage Covers */
+  --color-atlas-red: hsl(355, 80%, 50%);     /* Bold banner red */
+  --color-atlas-blue: hsl(210, 70%, 45%);    /* Rich map blue */
+  --color-atlas-teal: hsl(185, 60%, 45%);    /* Signature Rand McNally teal */
+  --color-atlas-yellow: hsl(52, 95%, 55%);   /* Bright atlas yellow */
+  --color-atlas-dark: hsl(0, 0%, 15%);       /* Deep black text */
+  --color-atlas-cream: hsl(45, 25%, 95%);    /* Atlas paper cream */
+
+  /* AUTHENTIC HEADER COLOR SCHEMES - Choose One */
+
+  /* Scheme 1: Classic Teal + Red (Most Authentic) */
+  --header-bg: var(--color-atlas-teal);
+  --header-text: var(--color-atlas-cream);
+  --header-accent: var(--color-atlas-red);
+
+  /* Dynamic Plate Variations - Atlas Style */
+  --color-plate-red-variant: hsl(355, 65%, 55%);   /* Atlas red plates */
+  --color-plate-blue-variant: hsl(210, 55%, 50%);  /* Atlas blue plates */
+  --color-plate-cream-variant: hsl(45, 40%, 80%);  /* Warm atlas cream plates */
+
+  /* Authentic Rand McNally Typography System */
+  --font-display: "Impact", "Anton", "Oswald", "Franklin Gothic Demi Cond", "Arial Black", sans-serif;  /* Bold industrial display */
+  --font-heading: "Impact", "Anton", "Oswald", "Franklin Gothic Demi", "Arial Black", sans-serif;       /* Bold condensed headlines */
+  --font-body: "Franklin Gothic", "Arial", "Helvetica", sans-serif;                                      /* Clean industrial body */
+  --font-mono: "Courier New", "Monaco", "Consolas", monospace;                                          /* Typewriter/technical */
+  --font-plate: "Impact", "Anton", "Oswald", "Franklin Gothic Demi Cond", "Arial Black", sans-serif;   /* Bold industrial plates */
+  --font-atlas-title: "Impact", "Anton", "Oswald", "League Gothic", "Franklin Gothic Extra Condensed", "Arial Black", "Helvetica Neue Condensed Bold", sans-serif; /* Authentic 1938 Rand McNally style */
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 3rem;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Shadows - Authentic Vintage Effects */
+  --shadow-sm: 0 1px 2px 0 rgba(44, 62, 80, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(44, 62, 80, 0.1), 0 2px 4px -1px rgba(44, 62, 80, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(44, 62, 80, 0.1), 0 4px 6px -2px rgba(44, 62, 80, 0.05);
+
+  /* Embossed Effects - License Plate Letters */
+  --shadow-embossed: 
+    0 1px 0 rgba(255, 255, 255, 0.8),
+    0 -1px 0 rgba(0, 0, 0, 0.2),
+    1px 0 0 rgba(255, 255, 255, 0.6),
+    -1px 0 0 rgba(0, 0, 0, 0.15),
+    0 2px 3px rgba(0, 0, 0, 0.3);
+
+  /* Metal Border Effects */
+  --shadow-metal:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+    
+  /* Paper Aging Filters */
+  --filter-aged-paper: sepia(15%) contrast(105%) brightness(98%) saturate(85%);
+  --filter-worn-paper: sepia(25%) contrast(102%) brightness(95%) saturate(80%);
+  --filter-vintage-photo: sepia(30%) contrast(110%) brightness(90%) saturate(75%);
+
+  /* Faint Map Background Elements */
+  --map-grid-opacity: 0.03;
+  --map-line-color: #8B4513;
+  --map-text-opacity: 0.02;
+
+  /* Dynamic Map Flyover System */
+  --map-base-opacity: 0.13;  /* More visible for color pop */
+  --map-hover-opacity: 0.18; /* Enhanced on hover */
+  --flyover-duration: 480s; /* Much slower for closer zoom */
+  --flyover-altitude: 2.4;  /* Closer altitude for more detail */
+  --flyover-distance: 70%;  /* Longer flight paths */
+
+  /* Color Enhancement for Visibility - More Pop! */
+  --map-contrast-filter: contrast(135%) saturate(145%) brightness(108%) hue-rotate(2deg);
+
+  /* Flight Route Variations - Slower for Closer Zoom */
+  --flyover-route-1-duration: 480s;  /* West to East original */
+  --flyover-route-2-duration: 520s;  /* North to South */  
+  --flyover-route-3-duration: 450s;  /* Southwest to Northeast diagonal */
+  --flyover-route-4-duration: 540s;  /* Southeast to Northwest diagonal */
+  --flyover-route-5-duration: 420s;  /* Random curved path */
+  --flyover-route-6-duration: 500s;  /* Northern transcontinental */
+  --flyover-route-7-duration: 510s;  /* Southern transcontinental */
+  --flyover-route-8-duration: 490s;  /* Central plains route */
+  --flyover-route-9-duration: 485s;  /* East to West return */
+  --flyover-route-10-duration: 430s; /* Random curved trajectory */
+  --flyover-route-11-duration: 560s; /* Serpentine exploration */
+}

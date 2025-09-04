@@ -1,0 +1,51 @@
+/* Responsive design rules for all screen sizes */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .game-container {
+    padding: var(--space-md);
+    gap: var(--space-lg);
+  }
+  
+  .plate-frame {
+    min-width: 300px;
+    max-width: 350px;
+  }
+  
+  .plate-letters {
+    font-size: var(--text-3xl);
+  }
+  
+  .App-header {
+    padding: var(--space-md);
+  }
+  
+  .App-header h1 {
+    font-size: var(--text-2xl);
+  }
+
+  .collection-modal {
+    width: 98vw;
+    max-height: 90vh;
+  }
+
+  .collection-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+
+  .collected-plates-grid {
+    grid-template-columns: 1fr;
+    max-height: 350px;
+  }
+
+  .collection-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .info-modal {
+    width: 95vw;
+    max-height: 90vh;
+  }
+}

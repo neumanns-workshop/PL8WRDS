@@ -1,3 +1,11 @@
-# https://www.robotstxt.org/robotstxt.html
+# PL8WRDS Robot Rules
 User-agent: *
-Disallow:
+Allow: /
+
+# Game data should not be indexed separately
+Disallow: /pl8wrds_complete.json.gz
+Disallow: /words/
+Disallow: /static/
+
+# Sitemap (if available)
+# Sitemap: https://pl8wrds.com/sitemap.xml

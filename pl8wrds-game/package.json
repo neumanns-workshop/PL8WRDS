@@ -1,15 +1,15 @@
 {
   "name": "pl8wrds-game",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "React frontend for PL8WRDS license plate word game",
+  "author": "PL8WRDS Team",
+  "license": "MIT",
+  "homepage": ".",
   "dependencies": {
     "@fontsource/courier-prime": "^5.2.6",
     "@fontsource/merriweather": "^5.2.9",
     "@fontsource/oswald": "^5.2.6",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.8.0",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
     "@types/node": "^24.3.0",
     "@types/pako": "^2.0.4",
     "@types/react": "^19.1.12",
@@ -20,21 +20,54 @@
     "pako": "^2.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "typescript": "^5.9.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^4.2.4"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.5.14",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "prettier": "^3.4.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "webpack-bundle-analyzer": "^4.10.2",
+    "source-map-explorer": "^2.5.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "test:ci": "react-scripts test --coverage --watchAll=false --ci",
+    "analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'",
+    "analyze:bundle": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
+    "lint": "eslint src --ext .ts,.tsx,.js,.jsx --max-warnings 0",
+    "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
+    "format": "prettier --write src/**/*.{ts,tsx,js,jsx,css,scss,json,md}",
+    "format:check": "prettier --check src/**/*.{ts,tsx,js,jsx,css,scss,json,md}",
+    "type-check": "tsc --noEmit",
+    "prepare": "cd .. && husky pl8wrds-game/.husky"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "off",
+      "react-hooks/exhaustive-deps": "warn"
+    }
   },
   "browserslist": {
     "production": [
@@ -47,5 +80,30 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.{css,scss,json,md}": [
+      "prettier --write"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/index.tsx",
+      "!src/reportWebVitals.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
   }
 }

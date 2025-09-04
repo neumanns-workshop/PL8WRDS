@@ -1,0 +1,50 @@
+/* App layout, header, and main container styles */
+
+/* App Layout */
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.App-header {
+  background: var(--header-bg);  /* Use selected color scheme */
+  border-bottom: 3px solid var(--color-atlas-dark);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.App-header h1 {
+  font-family: var(--font-atlas-title);
+  font-size: 2.2rem;  /* Authentic 1938 proportions */
+  font-weight: 900;  /* Maximum boldness for impact */
+  color: var(--header-text);  /* Dynamic header text color */
+  margin: 0;
+  letter-spacing: 0.1em;  /* Wide spacing for industrial feel */
+  text-transform: uppercase;
+  font-stretch: extra-condensed;  /* Authentic condensed style */
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);  /* Bold shadow for depth */
+}
+
+.game-description {
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* Game Container */
+.game-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xl);
+  padding: var(--space-2xl);
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}

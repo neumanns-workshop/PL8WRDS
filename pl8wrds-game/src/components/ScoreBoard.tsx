@@ -12,7 +12,7 @@ interface ScoreBoardProps {
 export const ScoreBoard: React.FC<ScoreBoardProps> = ({
   solutions,
   totalScore,
-  plateLetters,
+  plateLetters: _plateLetters,
   className = "",
 }) => {
   const foundSolutions = solutions.filter(s => s.found);

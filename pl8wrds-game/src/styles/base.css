@@ -1,0 +1,77 @@
+/* Base styles and typography for vintage theme */
+
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.65;  /* Better readability for serif */
+  color: var(--color-text);
+  background: var(--color-background);  /* Warm atlas paper background */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow-x: hidden;
+  font-weight: 400;  /* Classic book weight for serif */
+}
+
+/* Vintage Typography Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+  margin-bottom: var(--space-md);
+}
+
+h1 {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+h4 {
+  font-size: var(--text-lg);
+  font-weight: 500;
+}
+
+/* Display Typography for Special Elements */
+.display-text {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-atlas-dark);
+}
+
+.atlas-style {
+  font-family: var(--font-atlas-title);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-atlas-red);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Body Text Refinements */
+p {
+  line-height: 1.65;
+  margin-bottom: var(--space-md);
+}

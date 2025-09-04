@@ -1,0 +1,16 @@
+# Build directories
+build/
+dist/
+
+# Dependencies
+node_modules/
+
+# Cache directories
+.eslintcache
+
+# Generated files
+*.d.ts
+*.map
+
+# Config files
+craco.config.js

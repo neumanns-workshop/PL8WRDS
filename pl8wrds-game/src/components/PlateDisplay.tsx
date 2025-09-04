@@ -42,9 +42,9 @@ const generateVoronoiTexture = (plateId: string): string => {
 
 export const PlateDisplay: React.FC<PlateDisplayProps> = ({
   plate,
-  foundWordsCount,
-  totalSolutions,
-  foundWords,
+  foundWordsCount: _foundWordsCount,
+  totalSolutions: _totalSolutions,
+  foundWords: _foundWords,
   currentScore,
   onNewPlate,
   shouldShake = false,
@@ -54,7 +54,7 @@ export const PlateDisplay: React.FC<PlateDisplayProps> = ({
   const voronoiTexture = useMemo(() => {
     if (!plate) return '';
     return generateVoronoiTexture(plate.id);
-  }, [plate?.id]);
+  }, [plate]);
 
   if (!plate) {
     return (

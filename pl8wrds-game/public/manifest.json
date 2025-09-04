@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "PL8WRDS",
+  "name": "PL8WRDS - License Plate Word Game",
+  "description": "Find words using license plate letters in the correct order",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,9 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#2c3e50",
+  "background_color": "#ecf0f1",
+  "orientation": "portrait-primary",
+  "categories": ["games", "education", "entertainment"],
+  "lang": "en-US"
 }

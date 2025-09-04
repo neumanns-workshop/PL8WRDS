@@ -1,0 +1,227 @@
+# PL8WRDS .dockerignore
+# Exclude unnecessary files from Docker build context
+
+# ================================
+# VERSION CONTROL
+# ================================
+.git/
+.gitignore
+.gitattributes
+
+# ================================
+# CI/CD
+# ================================
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# ================================
+# DOCUMENTATION
+# ================================
+*.md
+!README.md
+docs/
+site/
+CICD_GUIDE.md
+ARCHITECTURE_REFACTOR.md
+TESTING.md
+idea.md
+scoring_features.md
+
+# ================================
+# DEVELOPMENT
+# ================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ================================
+# PYTHON
+# ================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ================================
+# TESTING
+# ================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+test-reports/
+test_output/
+test_results/
+
+# ================================
+# DEVELOPMENT DATA
+# ================================
+# Cache files (will be generated in container)
+cache/
+*.cache
+
+# Large data files (should be mounted as volumes)
+data/*.json
+data/*.csv
+data/*.txt
+!data/words_with_freqs.json  # Include if small and required
+
+# Model files (should be mounted as volumes)
+models/
+*.joblib
+*.pkl
+*.model
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# ================================
+# DOCKER
+# ================================
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# ================================
+# SECURITY
+# ================================
+# Environment files (secrets should use Docker secrets)
+.env*
+!.env.example
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.csr
+ssl/
+certs/
+
+# Secret files
+secrets/
+.secrets
+secret.json
+credentials.json
+
+# ================================
+# OS
+# ================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ================================
+# BACKUP FILES
+# ================================
+*.bak
+*.backup
+*.orig
+*.save
+
+# ================================
+# PERFORMANCE & PROFILING
+# ================================
+*.prof
+*.pprof
+profile.svg
+benchmark-results/
+performance-results/
+
+# ================================
+# DEPENDENCY MANAGEMENT
+# ================================
+# Keep only the main requirements files
+requirements-dev.txt
+requirements-dev.in
+# Poetry files
+poetry.lock
+pyproject.toml
+
+# ================================
+# KUBERNETES & DEPLOYMENT
+# ================================
+k8s/
+kubernetes/
+helm/
+kubeconfig
+*.kubeconfig
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# ================================
+# EXCLUDE SAMPLE/DEMO FILES
+# ================================
+demo_*.py
+sample_*.py
+example_*.py
+*_example.py
+*_sample.py
+*_demo.py

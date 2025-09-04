@@ -1,0 +1,190 @@
+/* Input fields, buttons, and form components */
+
+/* Modern Word Input - Vintage Styled */
+.word-input-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  align-items: center;
+}
+
+/* Input field with inline submit icon */
+.input-field-with-icon {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.word-input {
+  width: 100%;
+  padding: var(--space-md);
+  padding-right: 60px;  /* Make room for inline submit icon */
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-lg);
+  font-family: var(--font-mono);  /* Typewriter style for authenticity */
+  background: var(--header-text);  /* Match header text cream color */
+  color: var(--color-text);
+  transition: all 0.2s ease;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.05em;  /* Slight spacing for typewriter feel */
+}
+
+.word-input:focus {
+  outline: none;
+  border-color: var(--color-atlas-teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-atlas-teal) 15%, transparent);
+}
+
+.word-input.disabled {
+  background: var(--color-surface-variant);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Inline Submit Icon - Modern UX */
+.input-submit-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-atlas-teal);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.input-submit-icon:hover:not(.disabled) {
+  opacity: 1;
+  background: color-mix(in srgb, var(--color-atlas-teal) 10%, transparent);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.input-submit-icon.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Buttons - Vintage Style */
+.input-submit-button,
+.control-button {
+  background: var(--color-atlas-teal);  /* Beautiful teal like atlas covers */
+  color: var(--header-text);  /* Cream text */
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  font-family: var(--font-heading);  /* Serif for elegance */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  letter-spacing: 0.01em;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);  /* Subtle depth like header */
+}
+
+.input-submit-button:hover:not(.disabled),
+.control-button:hover {
+  background: color-mix(in srgb, var(--color-atlas-teal) 85%, black 15%);  /* Darker teal on hover */
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.input-submit-button.disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Icon & Text Styling */
+.inline-icon {
+  display: inline-block;
+  margin-right: var(--space-sm);
+  vertical-align: middle;
+}
+
+.shortcut-hint {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  margin-left: var(--space-sm);
+  font-family: var(--font-mono);
+}
+
+/* Button Group Layout */
+.button-group {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Input Submit Buttons - Compact Icon Buttons */
+.input-submit-button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--color-atlas-teal);
+  color: var(--header-text);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+}
+
+.input-submit-button:hover:not(.disabled) {
+  background: color-mix(in srgb, var(--color-atlas-teal) 85%, black 15%);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.input-submit-button.disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  transform: none;
+  text-shadow: none;
+}
+
+/* New Game Button Variant */
+.input-submit-button.new-game-button {
+  background: var(--color-secondary);
+}
+
+.input-submit-button.new-game-button:hover:not(.disabled) {
+  background: color-mix(in srgb, var(--color-secondary) 85%, black 15%);
+}
+
+/* Game Controls */
+.game-controls {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wide-button {
+  min-width: 300px;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-xl);
+  font-size: var(--text-xl);
+}

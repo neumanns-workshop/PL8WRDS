@@ -2,122 +2,180 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Common Commands
+## Project Overview
 
-### Development Server
+PL8WRDS is a license plate word game system with two main components:
+1. **React Frontend** (`pl8wrds-game/`) - Complete client-side word game with 15,715+ collectible plates
+2. **FastAPI Backend** (`app/`) - Optional API for scoring algorithms and customization
+
+The game features real ensemble scoring (Vocabulary + Information + Orthography) with pre-computed scores for 7+ million English word solutions.
+
+## Common Development Commands
+
+### Frontend (React Game) - Primary Development Target
 ```bash
-# Start the FastAPI development server
-uvicorn app.main:app --reload --port 8000
+# Start development server
+cd pl8wrds-game
+npm start  # Opens http://localhost:3000
 
-# Access the API documentation
-# - Interactive docs: http://127.0.0.1:8000/docs
-# - Alternative docs: http://127.0.0.1:8000/redoc
+# Build for production
+npm run build
+
+# Run tests
+npm test
+npm run test:coverage  # With coverage report
+npm run test:ci        # CI mode
+
+# Code quality
+npm run lint           # Check linting
+npm run lint:fix       # Auto-fix linting issues
+npm run format         # Format code with Prettier
+npm run format:check   # Check formatting
+npm run type-check     # TypeScript type checking
+
+# Bundle analysis
+npm run analyze        # Analyze bundle size
+npm run analyze:bundle # Detailed bundle analysis
 ```
 
-### CLI Tools
+### Backend (FastAPI API) - Optional
 ```bash
-# Score a single word using the CLI tool
-python run_scoring.py score "ambulance" "abc" --models granite mistral
+# Development server
+uvicorn app.main:app --reload  # Opens http://localhost:8000
 
-# Generate dataset for model training
-python run_scoring.py dataset --plates 100 --words 5 --models granite mistral deepseek --output new_dataset.json
+# Production server
+uvicorn app.main:app --host 0.0.0.0 --port 8000
 
-# Check system status
-python run_scoring.py check
+# Testing
+python -m pytest                    # Run all tests
+python -m pytest tests/ -v         # Verbose output
+python -m pytest --cov=app         # With coverage
+python -m pytest -k "test_name"    # Specific test
+
+# Code quality  
+ruff .                    # Lint with Ruff
+ruff --fix .             # Auto-fix issues
+black .                  # Format with Black
+mypy .                   # Type checking
+bandit -r app/           # Security scanning
+
+# Pre-commit hooks
+pre-commit run --all-files
 ```
 
-### Model Training
+### Development Dependencies
 ```bash
-# Train a new regression model (requires feature cache)
-python -m app.services.regression_trainer
-
-# Trigger feature cache generation (computationally expensive)
-curl -X POST http://127.0.0.1:8000/corpus/features/rebuild
-```
-
-### Testing
-```bash
-# Health check for prediction service
-curl http://127.0.0.1:8000/predict/health
-
-# Test prediction endpoint
-curl -X POST "http://127.0.0.1:8000/predict/score" \
-  -H "Content-Type: application/json" \
-  -d '{"word": "ambulance", "plate": "ABC"}'
+# Install all development dependencies
+pip install -e ".[dev]"     # Backend dev dependencies
+cd pl8wrds-game && npm install  # Frontend dependencies
 ```
 
 ## Architecture Overview
 
-### Core Components
+### Dual Architecture Pattern
+This project uses a **dual architecture** approach:
 
-**FastAPI Application** (`app/main.py`):
-- Entry point that initializes services and includes all routers
-- Handles startup tasks including prediction service initialization
+1. **Client-Side Complete**: The React game (`pl8wrds-game/`) is fully self-contained with pre-computed game data (~27MB)
+2. **Optional API**: The FastAPI backend (`app/`) provides advanced customization and can regenerate scoring models
 
-**Service Layer** (`app/services/`):
-- `prediction_service.py`: ML prediction using trained Ridge regression model
-- `feature_extraction.py`: Comprehensive linguistic feature extraction for words
-- `scoring_service.py`: LLM-based scoring using Ollama
-- `solver_service.py`: Word discovery algorithms for license plate patterns
-- `word_service.py`: Dictionary and frequency lookups
-- `regression_trainer.py`: Model training pipeline
+### Backend Architecture (FastAPI)
+- **Clean Architecture**: Domain → Application → Infrastructure layers
+- **Dependency Injection**: Using `dependency-injector` for IoC
+- **Monitoring Stack**: OpenTelemetry + Prometheus + Sentry
+- **Error Handling**: Structured error responses with proper HTTP codes
+- **Configuration**: Environment-based settings with Pydantic
 
-**API Routes** (`app/routers/`):
-- `prediction.py`: ML-based scoring predictions (primary feature)
-- `corpus.py`: Corpus statistics and feature cache management
-- `scoring.py`: LLM-based scoring endpoints
-- `solver.py`: Word finding algorithms
-- `dataset.py`: Dataset generation and management
+Key directories:
+```
+app/
+├── core/                  # Configuration, DI container, error handlers  
+├── domain/               # Business entities and value objects
+├── application/          # Use cases and service interfaces
+├── infrastructure/       # External service implementations
+├── routers/              # FastAPI route handlers
+├── services/             # Business logic services
+└── monitoring/           # Observability and health checks
+```
 
-**Data Models** (`app/models/`):
-- Pydantic models for request/response validation
+### Frontend Architecture (React)
+- **Component-Based**: Reusable React components in TypeScript
+- **Custom Hooks**: Game logic separated into custom hooks
+- **Client-Side Data**: Pre-loaded game data with compression (pako/gzip)
+- **State Management**: React hooks for game state (no external state library)
 
-### Key Data Flow
+Key directories:
+```
+pl8wrds-game/src/
+├── components/           # React UI components
+├── hooks/               # Game logic hooks  
+├── services/            # Data loading and API calls
+├── types/               # TypeScript type definitions
+└── utils/               # Helper functions
+```
 
-1. **Word Discovery**: `solver_service` finds words matching license plate patterns using subsequence matching
-2. **Feature Extraction**: `feature_extraction` computes linguistic features (TF-IDF, n-grams, positional entropy, etc.)
-3. **ML Prediction**: `prediction_service` uses trained Ridge regression to predict word impressiveness scores
-4. **LLM Scoring**: `scoring_service` optionally uses language models for human-like evaluations
+### Data Architecture
+- **Pre-computed Scoring**: All ensemble scores calculated offline for performance
+- **Split Storage**: Word properties separate from plate-specific context scores
+- **Efficient Format**: `{word_id: info_score}` mapping with shared dictionary
+- **Compression**: Gzip compression reduces ~25MB data to practical size
 
-### Model Architecture
+### Scoring System (3-Dimensional Ensemble)
+1. **Vocabulary Score** (0-100): Corpus frequency and word rarity
+2. **Information Score** (0-100): Context-dependent plate-word relationships  
+3. **Orthographic Score** (0-100): Letter pattern complexity
+4. **Ensemble Score**: Simple average of all three components
 
-The system uses a **Ridge regression model** trained to mimic LLM judge panels. Features include:
-- **Corpus Statistics**: TF-IDF, plate difficulty, word rarity
-- **Linguistic Features**: Character n-grams, vowel/consonant ratios, word length
-- **Positional Features**: Entropy of license plate letter positions within words
-- **Frequency Features**: Word frequency from dictionary corpus
+## Key Configuration Files
 
-## Important File Locations
+- `pyproject.toml` - Python project config with extensive tool configurations
+- `pl8wrds-game/package.json` - React app dependencies and scripts
+- `.pre-commit-config.yaml` - Pre-commit hooks for code quality
+- `requirements.txt` - Python production dependencies
 
-- **Trained Model**: `models/word_scoring_ridge_v3.joblib`
-- **Feature Cache**: `cache/corpus_features.json` (auto-generated, large file)
-- **Corpus Stats**: `cache/corpus_stats.json` (auto-generated)
-- **Word Dictionary**: `data/words_with_freqs.json`
-- **CLI Tool**: `run_scoring.py`
+## Development Workflow
 
-## Development Notes
+### Working on the Game (Most Common)
+1. Focus on `pl8wrds-game/` directory
+2. Use `npm start` for development server
+3. Game loads pre-built data automatically
+4. Test changes in browser at localhost:3000
 
-### Cache Management
-- Feature extraction is computationally expensive and cached automatically
-- Cache files can be several hundred MB
-- Use `/corpus/features/rebuild` API endpoint to regenerate cache
-- Prediction service requires feature cache to be available on startup
+### Working on Scoring/API
+1. Install Python dependencies: `pip install -r requirements.txt`
+2. Build models if needed: `python rebuild_all_models.py`
+3. Start API: `uvicorn app.main:app --reload`
+4. API available at localhost:8000
 
-### Model Training Workflow
-1. Generate labeled dataset using LLM judges (`run_scoring.py dataset`)
-2. Build feature cache for all word-plate pairs (expensive, one-time)
-3. Train regression model (`app.services.regression_trainer`)
-4. Deploy new model by replacing `models/word_scoring_ridge_v3.joblib`
+### Code Quality Standards
+- **Python**: Ruff + Black + MyPy + Bandit (configured in pyproject.toml)
+- **React**: ESLint + Prettier + TypeScript strict mode
+- **Pre-commit hooks**: Automatically run quality checks
+- **Testing**: pytest for backend, React Testing Library for frontend
 
-### Performance Considerations
-- First-time cache generation takes several minutes
-- Feature cache enables fast predictions after initial build
-- Memory usage can be high during feature extraction
-- Use corpus statistics API endpoints for bulk operations
+### Testing Strategy
+- **Backend**: Unit tests with pytest, 80% coverage requirement
+- **Frontend**: Component tests with React Testing Library, 80% coverage requirement  
+- **Integration**: FastAPI TestClient for API endpoints
+- **Performance**: Benchmark tests for scoring algorithms
 
-### Game Rules Implementation
-Words must contain license plate letters **in correct order** but not necessarily consecutive:
-- ✅ "ambulance" for "ABC" (A-m-B-u-l-a-n-C-e)  
-- ❌ "cabin" for "ABC" (wrong order: C-A-B-i-n)
+## Important Notes
 
-The scoring system evaluates cleverness, difficulty, satisfaction, and word quality to predict human-like impressiveness ratings.
+### Data Handling
+- Game data is pre-computed and should not be regenerated casually
+- The `ultra_fast_final_scoring.py` script generates the complete dataset
+- Client game loads compressed data automatically
+
+### Performance Considerations  
+- Frontend uses lazy loading for large datasets
+- Backend implements caching for expensive operations
+- Pre-computed scores eliminate runtime ML inference
+
+### Security
+- API includes rate limiting, security headers, and input validation
+- Frontend sanitizes all user inputs
+- No sensitive data should be committed to repository
+
+### Deployment
+- **Frontend**: Build with `npm run build`, deploy to static hosting (Netlify recommended)
+- **Backend**: Docker-ready with comprehensive monitoring and health checks
+- **Environment**: Separate configurations for dev/staging/production

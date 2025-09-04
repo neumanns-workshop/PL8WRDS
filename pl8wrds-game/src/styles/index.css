@@ -1,0 +1,20 @@
+/* Vintage Rand McNally Theme - Modular CSS Architecture */
+/* Main entry point importing all theme modules */
+
+/* Core Foundation */
+@import './variables.css';       /* CSS custom properties and theme variables */
+@import './base.css';            /* Reset, base styles, and typography */
+
+/* Visual Systems */
+@import './backgrounds.css';     /* Dynamic map background and animations */
+@import './layout.css';          /* App layout, header, and containers */
+
+/* Components */
+@import './plate.css';           /* License plate component system */
+@import './forms.css';           /* Input fields, buttons, and form components */
+@import './components.css';      /* Loading, error, and utility components */
+@import './modals.css';          /* Modal system and info modal styles */
+@import './collection.css';      /* Collection modal specific styles */
+
+/* Responsive */
+@import './responsive.css';      /* Responsive design rules for all screen sizes */
