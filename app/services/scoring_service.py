@@ -29,7 +29,7 @@ from ..services.combination_generator import generate_combinations
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-from ollama_client import OllamaClient, check_ollama_health, check_model_available, auto_setup_model
+from tools.ollama_client import OllamaClient, check_ollama_health, check_model_available, auto_setup_model
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

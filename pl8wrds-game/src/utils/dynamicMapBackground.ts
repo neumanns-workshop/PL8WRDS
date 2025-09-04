@@ -7,7 +7,9 @@ import vintageMapImage from '../assets/1918_AAA_General_Map_of_Transcontinental_
 export class DynamicMapBackground {
   private static instance: DynamicMapBackground;
   private currentRoute: number = 1;
-  private animationElement: HTMLElement | null = null;
+  protected animationElement: HTMLElement | null = null;
+  private routeTimer: NodeJS.Timeout | null = null;
+  private isAutomatic: boolean = false;
   
   private routes = [
     'vintageMapFlyover',     // West to East original
@@ -31,7 +33,7 @@ export class DynamicMapBackground {
     'Random zigzag exploration'
   ];
 
-  private constructor() {
+  protected constructor() {
     this.initializeDebugCommands();
   }
   
@@ -81,6 +83,49 @@ export class DynamicMapBackground {
     this.currentRoute = Math.floor(Math.random() * this.routes.length) + 1;
     console.log(`🎲 Selected route ${this.currentRoute}: ${this.routes[this.currentRoute - 1]}`);
     this.updateRoute();
+    this.scheduleNextRoute();
+  }
+  
+  /**
+   * Start automatic route progression
+   */
+  startAutoProgression(): void {
+    this.isAutomatic = true;
+    this.scheduleNextRoute();
+    console.log('▶️  Started automatic route progression');
+  }
+  
+  /**
+   * Stop automatic route progression
+   */
+  stopAutoProgression(): void {
+    this.isAutomatic = false;
+    if (this.routeTimer) {
+      clearTimeout(this.routeTimer);
+      this.routeTimer = null;
+    }
+    console.log('⏹️  Stopped automatic route progression');
+  }
+  
+  /**
+   * Schedule the next route change
+   */
+  private scheduleNextRoute(): void {
+    if (!this.isAutomatic) return;
+    
+    if (this.routeTimer) {
+      clearTimeout(this.routeTimer);
+    }
+    
+    const currentRouteDuration = this.routeDurations[this.currentRoute - 1] * 1000; // Convert to ms
+    const pauseDuration = 2000 + Math.random() * 2000; // 2-4 second pause
+    const totalDuration = currentRouteDuration + pauseDuration;
+    
+    this.routeTimer = setTimeout(() => {
+      if (this.isAutomatic) {
+        this.setRandomRoute();
+      }
+    }, totalDuration);
   }
 
   /**
@@ -134,6 +179,10 @@ export class DynamicMapBackground {
     this.currentRoute = routeNumber;
     console.log(`🎯 Manually set route ${routeNumber}: ${this.routes[routeNumber - 1]}`);
     this.updateRoute();
+    
+    if (this.isAutomatic) {
+      this.scheduleNextRoute();
+    }
   }
 
   /**
@@ -198,6 +247,15 @@ export class DynamicMapBackground {
       start: () => this.start(),
       toggle: () => this.toggle(),
       current: () => this.getCurrentRouteInfo(),
+      startAuto: () => this.startAutoProgression(),
+      stopAuto: () => this.stopAutoProgression(),
+      auto: (enabled: boolean = true) => {
+        if (enabled) {
+          this.startAutoProgression();
+        } else {
+          this.stopAutoProgression();
+        }
+      },
       routes: () => {
         console.log('🗺️ Available Routes:');
         this.getAvailableRoutes().forEach(route => {
@@ -214,6 +272,7 @@ export class DynamicMapBackground {
         console.log('mapFlyover.start() - Start animation');
         console.log('mapFlyover.stop() - Stop animation');
         console.log('mapFlyover.toggle() - Toggle animation on/off');
+        console.log('mapFlyover.auto(true/false) - Enable/disable auto progression');
         console.log('mapFlyover.help() - Show this help\n');
       }
     };
@@ -223,8 +282,5 @@ export class DynamicMapBackground {
   }
 }
 
-// Create and export the singleton instance
+// Create and export the singleton instance (explicit init required)
 export const dynamicMapBackground = DynamicMapBackground.getInstance();
-
-// Auto-initialize on import
-dynamicMapBackground.initialize();

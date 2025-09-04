@@ -1,7 +1,8 @@
 // Main App component for PL8WRDS game
 import { useEffect, useState } from 'react';
 import './styles/index.css';
-import './utils/dynamicMapBackground'; // Initialize the dynamic map background
+import { geographicMapBackground } from './utils/geographicMapBackground'; // JS-driven geographic panning
+import { mapPanner } from './utils/mapPanner';
 import { ThemeProvider } from './theme';
 import { useGameCore } from './hooks/useGameCore';
 import PlateDisplay from './components/PlateDisplay';
@@ -17,6 +18,21 @@ function App() {
   const { gameState, isLoading, error, shouldShakePlate, floatingScore, isPlatePressed, actions } = useGameCore();
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
+
+  // Initialize geographic JS-driven background
+  useEffect(() => {
+    const initializeGeographicBackground = async () => {
+      try {
+        await mapPanner.initialize();
+        await geographicMapBackground.initialize();
+        console.log('🗺️ Geographic panning activated with real waypoints!');
+      } catch (error) {
+        console.warn('⚠️ Geographic system unavailable:', error);
+      }
+    };
+    
+    initializeGeographicBackground();
+  }, []);
 
   // Auto-start first game when data is loaded
   useEffect(() => {

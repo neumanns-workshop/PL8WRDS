@@ -32,6 +32,7 @@ from .routers import (
     corpus,
     dataset,
     dictionary,
+    map_pinning,
     metrics,
     monitoring,
     prediction,
@@ -142,6 +143,7 @@ app.add_middleware(ObservabilityMiddleware)
 
 # Include routers
 app.include_router(monitoring.router)  # Add monitoring router first
+app.include_router(map_pinning.router)  # Map pinning interface
 app.include_router(solver.router)
 app.include_router(scoring.router)
 app.include_router(metrics.router)
